@@ -1,8 +1,7 @@
-require('dotenv').config();
-const app = require('./app');
+const sequelize = require('./config/db');
 
-const PORT = 3000;
-
-app.listen(PORT, () => {
-    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+sequelize.sync().then(() => {
+    app.listen(PORT, () => {
+        console.log(`✅ Servidor y Base de Datos listos en el puerto ${PORT}`);
+    });
 });

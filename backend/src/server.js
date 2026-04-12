@@ -1,7 +1,10 @@
+const app = require('./app');
 const sequelize = require('./config/db');
+
+const PORT = process.env.PORT || 3000;
 
 sequelize.sync().then(() => {
     app.listen(PORT, () => {
-        console.log(`✅ Servidor y Base de Datos listos en el puerto ${PORT}`);
+        console.log(`✅ Servidor corriendo en puerto ${PORT}`);
     });
 });

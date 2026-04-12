@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-// GET de prueba
-router.get('/', (req, res) => {
-    res.json({ mensaje: 'Candidatos funcionando' });
-});
+const controller = require('../controllers/candidato.controller');
+const auth = require('../middlewares/auth.middleware');
+
+router.get('/perfil', auth, controller.getPerfil);
 
 module.exports = router;

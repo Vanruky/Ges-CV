@@ -1,0 +1,52 @@
+<div class="container">
+
+    <h2 class="welcome">GES-CV</h2>
+
+    <div class="register-card">
+
+        <h2>Crear Cuenta</h2>
+
+        <div class="grid">
+            <input [(ngModel)]="nombre" placeholder="Nombre">
+            <input [(ngModel)]="apellido_paterno" placeholder="Apellido Paterno">
+            <input [(ngModel)]="apellido_materno" placeholder="Apellido Materno">
+        </div>
+
+        <div class="grid">
+            <select [(ngModel)]="tipo_identificacion">
+                <option value="">Tipo de identificación</option>
+                <option value="RUT">RUT</option>
+                <option value="RUT_PROVISORIO">RUT Provisorio</option>
+                <option value="PASAPORTE">Pasaporte</option>
+            </select>
+
+            <input [(ngModel)]="numero_identificacion" placeholder="Número de identificación">
+        </div>
+
+    <div class="grid">
+        <input [(ngModel)]="celular" placeholder="Celular">
+        </div>
+
+        <div class="grid">
+        <input [(ngModel)]="correo" placeholder="Correo electrónico">
+        </div>
+
+        <div class="grid">
+            <input [(ngModel)]="password" type="password" placeholder="Contraseña">
+            <input [(ngModel)]="confirmPassword" type="password" placeholder="Confirmar contraseña">
+        </div>
+
+        <button (click)="register()">Registrarse y continuar </button>
+
+        <div class="login">
+            ¿Ya tienes una cuenta?
+            <span (click)="goToLogin()">Inicia sesión.</span>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        © 2026 GES-CV · Plataforma de Gestión de Talento en Salud
+    </footer>
+
+</div>

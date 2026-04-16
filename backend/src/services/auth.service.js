@@ -11,6 +11,7 @@ exports.register = async (data) => {
             nombre,
             apellido_paterno,
             apellido_materno,
+            celular,
             tipo_identificacion,
             numero_identificacion
         } = data;
@@ -52,7 +53,8 @@ exports.register = async (data) => {
             apellido_paterno,
             apellido_materno,
             tipo_identificacion,
-            numero_identificacion
+            numero_identificacion,
+            celular
         }, { transaction: t });
 
         await t.commit();

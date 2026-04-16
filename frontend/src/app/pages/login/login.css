@@ -1,0 +1,138 @@
+/* BG */
+.container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/assets/bg-login.jpg'); 
+    background-size: cover;
+    background-position: center;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: -1;
+}
+
+/* Header */
+.welcome {
+    position: fixed;
+    top: 10px;
+    right: 100px;
+    font-size: 36px;
+    color: #fff;
+    font-weight: bold;
+    text-shadow: 0 0 20px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+/* Card */
+.login-card {
+    background: #1c2331;
+    padding: 40px;
+    border-radius: 20px;
+    width: 350px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    position: fixed;
+    left: 40%;
+    z-index: 2;
+}
+
+.login-card h2 {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 30px;
+}
+
+.login-card label {
+    color: #ccc;
+    font-size: 14px;
+    margin-bottom: 5px;
+    margin-top: 10px;
+    display: block;
+}
+
+.login-card input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    border: 2px solid #00d4c6;
+    background: transparent;
+    color: white;
+    outline: none;
+}
+
+.login-card input:focus {
+    border-color: #00fff0;
+}
+
+/* Recuperar */
+.recover {
+    text-align: start;
+    color: #ccc;
+    font-size: 13px;
+}
+
+.recover span {
+    color: #ccc;
+    cursor: pointer;
+    margin-left: 3px;
+    text-decoration: underline;
+}
+
+/* Botón */
+.login-card button {
+    width: 100%;
+    padding: 12px;
+    background: #00bfa6;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 30px;
+}
+
+/* Hover botón */
+.login-card button:hover {
+    background: #02e7d7;
+}
+
+/* Registro */
+.register {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    color: #ccc;
+    font-size: 15px;
+}
+
+.register span {
+    color: #9b5cff;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.register span:hover {
+    text-decoration: underline;
+}
+
+/* Footer */
+.footer {
+    position: fixed;
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    letter-spacing: 0.5px;
+    z-index: 1;
+}

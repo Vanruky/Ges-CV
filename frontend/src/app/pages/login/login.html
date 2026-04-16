@@ -1,0 +1,32 @@
+<div class="container">
+
+    <h2 class="welcome">GES-CV</h2>
+
+    <div class="login-card">
+
+        <h2>Iniciar Sesión</h2>
+
+        <label>Correo electrónico</label>
+        <input [(ngModel)]="correo" placeholder="Correo electrónico">
+
+        <label>Contraseña</label>
+        <input [(ngModel)]="password" type="password" placeholder="Contraseña">
+
+        <div class="recover">
+            <span (click)="goToRecover()">¿No recuerdas tu contraseña?</span>
+        </div>
+
+        <button (click)="login()">Ingresar</button>
+
+        <div class="register">
+            ¿Aún no tienes una cuenta?
+            <span (click)="goToRegister()">Regístrate aquí.</span>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        © 2026 GES-CV · Plataforma de Gestión de Talento en Salud
+    </footer>
+
+</div>

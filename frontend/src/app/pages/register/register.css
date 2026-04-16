@@ -1,0 +1,123 @@
+/* BG */
+.container {
+    height: 100vh; 
+    width: 100%;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/assets/bg-login.jpg'); 
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    position: relative;
+}
+
+/* Header */
+.welcome {
+    position: absolute;
+    top: 10px;
+    bottom: 20px;
+    right: 100px;
+    font-size: 36px;
+    color: #fff;
+    font-weight: bold;
+    text-shadow: 0 0 20px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Card */
+.register-card {
+    background: #1c2331;
+    padding: 40px;
+    border-radius: 20px;
+    width: 500px; 
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    position: absolute;
+    left: 35%;
+}
+
+.register-card h2 {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 30px;
+}
+
+.register-card input,
+.register-card select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 2px solid #00d4c6;
+    background: transparent;
+    color: white;
+    outline: none;
+    margin-bottom: 15px;
+}
+
+.grid {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.grid input,
+.grid select {
+    flex: 1;
+    box-sizing: border-box; 
+}
+
+.register-card select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 2px solid #00d4c6;
+    background: transparent;
+    color: rgb(108, 108, 108);
+    outline: none;
+}
+
+/* Botón */
+.register-card button {
+    width: 100%;
+    padding: 12px;
+    background: #00bfa6;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Hover botón */
+.register-card button:hover {
+    background: #02e7d7;
+}
+
+/* Login */
+.login {
+    margin-top: 30px;
+    text-align: center;
+    color: #ccc;
+    font-size: 15px;
+}
+
+.login span {
+    color: #9b5cff;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.login span:hover {
+    text-decoration: underline;
+}
+
+/* Footer */
+.footer {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    letter-spacing: 0.5px;
+}

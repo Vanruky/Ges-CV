@@ -1,22 +1,33 @@
 <div class="layout">
   <div class="sidebar">
-    <h2>Bienvenido</h2>
-    <a routerLink="/candidato/home">Home</a>
-    <a routerLink="/candidato/cuenta">Mi cuenta</a>
-    <a routerLink="/candidato/postulaciones">Postular</a>
+    <h2 class="sidebar-brand">Bienvenido</h2>
+    <a routerLink="/candidato/home" routerLinkActive="active">Home</a>
+    <a routerLink="/candidato/cuenta" routerLinkActive="active">Mi cuenta</a>
+    <a routerLink="/candidato/postulaciones" routerLinkActive="active">Postular</a>
   </div>
 
-  <div class="main">
+  <div class="main-container">
+    
     <div class="topbar">
-      <button (click)="logout()">Salir</button>
+      <div class="topbar-left"></div>
+      
+      <div class="topbar-center">
+        <h2 class="topbar-title">{{ tituloPagina }}</h2>
+      </div>
+
+      <div class="topbar-right">
+        <button class="btn-logout" (click)="logout()">Salir</button>
+      </div>
     </div>
 
-    <div class="content">
-      <router-outlet></router-outlet>
-      
-      <p class="aviso-postulacion">
-        Recuerde que solo se puede realizar una postulación cada 6 meses para el mismo cargo.
-      </p>
+    <div class="content-scroll">
+      <div class="content-wrapper">
+        <router-outlet (activate)="onActivate($event)"></router-outlet>
+        
+        <p class="aviso-postulacion">
+          Recuerde que solo se puede realizar una postulación cada 6 meses para el mismo cargo.
+        </p>
+      </div>
     </div>
 
     <footer class="footer">

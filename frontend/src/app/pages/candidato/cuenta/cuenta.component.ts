@@ -16,6 +16,10 @@ export class CuentaComponent implements OnInit {
   editando = false;
   copia: any = {};
 
+  mostrarModal = false;
+  mostrarExito = false;
+  mostrarError = false;
+
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
@@ -23,9 +27,12 @@ export class CuentaComponent implements OnInit {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
-    }).subscribe(res => {
-      this.perfil = res;
-      this.copia = { ...res };
+    }).subscribe({
+      next: (res) => {
+        this.perfil = res;
+        this.copia = { ...res };
+      },
+      error: (err) => console.error('Error al cargar perfil', err)
     });
   }
 
@@ -38,18 +45,37 @@ export class CuentaComponent implements OnInit {
     this.editando = false;
   }
 
-  confirmar() {
+  abrirModal() {
+    this.mostrarModal = true;
+  }
+
+  cerrarModales() {
+    this.mostrarModal = false;
+    this.mostrarExito = false;
+    this.mostrarError = false;
+  }
+
+  confirmarCambios() {
+    this.mostrarModal = false;
+
     this.http.put('http://localhost:3000/api/candidatos/perfil', this.perfil, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
-    }).subscribe(() => {
-      alert('Actualizado correctamente');
-      this.editando = false;
+    }).subscribe({
+      next: () => {
+        this.editando = false;
+        this.copia = { ...this.perfil };
+        this.mostrarExito = true;
+      },
+      error: () => {
+        this.mostrarError = true;
+      }
     });
   }
 
   logout() {
     localStorage.clear();
+    window.location.href = '/login';
   }
 }

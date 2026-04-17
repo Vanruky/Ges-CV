@@ -1,7 +1,5 @@
 const { Candidato } = require('../models');
-
-const USE_MOCK = true;
-/*CON SQL ON: borrar*/
+const USE_MOCK = true; 
 let candidatoMock = {
     id_candidato: 1,
     id_usuario: 1,
@@ -16,7 +14,6 @@ let candidatoMock = {
 
 exports.getPerfil = async (req, res) => {
     try {
-
         if (USE_MOCK) {
             return res.json({
                 ...candidatoMock,
@@ -24,15 +21,11 @@ exports.getPerfil = async (req, res) => {
             });
         }
 
-        const candidato = await Candidato.findOne({
-            where: { id_usuario: req.usuario.id }
-        });
-
+        const candidato = await Candidato.findOne({ where: { id_usuario: req.usuario.id } });
         res.json({
             ...candidato.dataValues,
             nombre_completo: `${candidato.nombre} ${candidato.apellido_paterno} ${candidato.apellido_materno}`
         });
-
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -40,89 +33,118 @@ exports.getPerfil = async (req, res) => {
 
 exports.updatePerfil = async (req, res) => {
     try {
-        const {
-            numero_identificacion,
-            nombre,
-            apellido_paterno,
-            apellido_materno,
-            correo,
-            celular
-        } = req.body;
-
-        if (!nombre || !apellido_paterno) {
-            return res.status(400).json({
-                mensaje: "Nombre y apellido son obligatorios"
-            });
-        }
-
-        const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (correo && !regexCorreo.test(correo)) {
-            return res.status(400).json({
-                mensaje: "Correo inválido"
-            });
-        }
+        const { numero_identificacion, nombre, apellido_paterno, apellido_materno, correo, celular } = req.body;
 
         if (USE_MOCK) {
-            //RUT solo es editable una vez, en caso de error de typeo
-            if (
-                numero_identificacion &&
-                numero_identificacion !== candidatoMock.numero_identificacion
-            ) {
+            const cambioIdentidad = 
+                numero_identificacion !== candidatoMock.numero_identificacion ||
+                nombre !== candidatoMock.nombre ||
+                apellido_paterno !== candidatoMock.apellido_paterno ||
+                apellido_materno !== candidatoMock.apellido_materno;
+
+            if (cambioIdentidad) {
                 if (candidatoMock.rut_editado === 1) {
                     return res.status(400).json({
-                        mensaje: "El RUT ya fue modificado anteriormente"
+                        mensaje: "Los datos de identidad (RUT, Nombre y Apellidos) ya fueron modificados anteriormente."
                     });
                 }
-
                 candidatoMock.numero_identificacion = numero_identificacion;
+                candidatoMock.nombre = nombre;
+                candidatoMock.apellido_paterno = apellido_paterno;
+                candidatoMock.apellido_materno = apellido_materno;
                 candidatoMock.rut_editado = 1;
             }
-
-            candidatoMock.nombre = nombre;
-            candidatoMock.apellido_paterno = apellido_paterno;
-            candidatoMock.apellido_materno = apellido_materno;
             candidatoMock.correo = correo;
             candidatoMock.celular = celular;
-
-            return res.json({
-                mensaje: "Perfil actualizado (mock)",
-                data: candidatoMock
-            });
+            return res.json({ mensaje: "Perfil actualizado (mock)", data: candidatoMock });
         }
 
-        //SQL
-        const candidato = await Candidato.findOne({
-            where: { id_usuario: req.usuario.id }
+        const candidato = await Candidato.findOne({ where: { id_usuario: req.usuario.id } });
+        const cambioIdentidadSQL = 
+            numero_identificacion !== candidato.numero_identificacion ||
+            nombre !== candidato.nombre ||
+            apellido_paterno !== candidato.apellido_paterno ||
+            apellido_materno !== candidato.apellido_materno;
+
+        if (cambioIdentidadSQL) {
+            if (candidato.rut_editado === 1) {
+                return res.status(400).json({ mensaje: "Identidad bloqueada: ya se realizó una edición previa." });
+            }
+            candidato.rut_editado = 1;
+            candidato.numero_identificacion = numero_identificacion;
+            candidato.nombre = nombre;
+            candidato.apellido_paterno = apellido_paterno;
+            candidato.apellido_materno = apellido_materno;
+        }
+        candidato.correo = correo;
+        candidato.celular = celular;
+        await candidato.save();
+        res.json({ mensaje: "Perfil actualizado", data: candidato });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+/*  < dejo el prospecto de código limpio asumiendo que SQL esta conectado, toca verificar si hay cambios despues
+const { Candidato } = require('../models');
+
+exports.getPerfil = async (req, res) => {
+    try {
+        const candidato = await Candidato.findOne({ 
+            where: { id_usuario: req.usuario.id } 
         });
 
-        if (
-            numero_identificacion &&
-            numero_identificacion !== candidato.numero_identificacion
-        ) {
+        if (!candidato) {
+            return res.status(404).json({ mensaje: "Perfil no encontrado" });
+        }
+
+        res.json({
+            ...candidato.dataValues,
+            nombre_completo: `${candidato.nombre} ${candidato.apellido_paterno} ${candidato.apellido_materno}`
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+exports.updatePerfil = async (req, res) => {
+    try {
+        const { numero_identificacion, nombre, apellido_paterno, apellido_materno, correo, celular } = req.body;
+
+        const candidato = await Candidato.findOne({ 
+            where: { id_usuario: req.usuario.id } 
+        });
+
+        const cambioIdentidad = 
+            numero_identificacion !== candidato.numero_identificacion ||
+            nombre !== candidato.nombre ||
+            apellido_paterno !== candidato.apellido_paterno ||
+            apellido_materno !== candidato.apellido_materno;
+
+        if (cambioIdentidad) {
+            // Regla de seguridad: Si rut_editado es 1, ya no se puede cambiar la identidad
             if (candidato.rut_editado === 1) {
-                return res.status(400).json({
-                    mensaje: "El RUT ya fue modificado anteriormente"
+                return res.status(400).json({ 
+                    mensaje: "Los datos de identidad ya fueron validados y editados anteriormente. No se permiten más cambios por seguridad." 
                 });
             }
-
             candidato.numero_identificacion = numero_identificacion;
+            candidato.nombre = nombre;
+            candidato.apellido_paterno = apellido_paterno;
+            candidato.apellido_materno = apellido_materno;
             candidato.rut_editado = 1;
         }
 
-        candidato.nombre = nombre;
-        candidato.apellido_paterno = apellido_paterno;
-        candidato.apellido_materno = apellido_materno;
         candidato.correo = correo;
         candidato.celular = celular;
 
         await candidato.save();
 
-        res.json({
-            mensaje: "Perfil actualizado",
-            data: candidato
+        res.json({ 
+            mensaje: "Perfil actualizado correctamente", 
+            data: candidato 
         });
-
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
+*/

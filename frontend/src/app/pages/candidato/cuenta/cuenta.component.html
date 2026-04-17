@@ -1,4 +1,4 @@
-<div class="content">
+<div class="content-cuenta">
   <div class="card">
     <div class="field">
       <label>RUT</label>
@@ -31,13 +31,52 @@
     </div>
 
     <div class="actions single" *ngIf="!editando">
-      <button (click)="activarEdicion()">Actualizar mi información</button>
+      <span class="edit-link" (click)="activarEdicion()">
+        Actualizar mi información
+      </span>
     </div>
 
     <div class="actions double" *ngIf="editando">
       <button class="btn-cancel" (click)="cancelar()">Cancelar</button>
-      <button class="btn-confirm" (click)="confirmar()">Confirmar</button>
+      <button class="btn-confirm-trigger" (click)="abrirModal()">Confirmar</button>
     </div>
   </div>
 
+  <div class="modal-overlay" *ngIf="mostrarModal">
+    <div class="modal-card">
+      <h3>Confirmación de Seguridad</h3>
+      <div class="modal-body">
+        <p>Tenga en cuenta que el <strong>RUT, Nombre y Apellidos</strong> solo se pueden editar una vez.</p>
+        <p>¿Está seguro de que los datos son correctos?</p>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" (click)="cerrarModales()">Revisar</button>
+        <button class="btn-modal-confirm" (click)="confirmarCambios()">Sí, confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" *ngIf="mostrarExito">
+    <div class="modal-card success">
+      <h3>¡Actualizado!</h3>
+      <div class="modal-body">
+        <p>Su información ha sido guardada con éxito.</p>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-modal-confirm" (click)="cerrarModales()">Aceptar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" *ngIf="mostrarError">
+    <div class="modal-card error">
+      <h3>Ups, algo salió mal</h3>
+      <div class="modal-body">
+        <p>Error al actualizar la información. Intente nuevamente.</p>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-modal-error" (click)="cerrarModales()">Cerrar</button>
+      </div>
+    </div>
+  </div>
 </div>

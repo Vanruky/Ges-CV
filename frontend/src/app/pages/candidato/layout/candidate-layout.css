@@ -1,88 +1,119 @@
 .layout {
   height: 100vh;
-  width: 100%;
+  width: 100vw;
   display: flex;
-  background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+  background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
     url('/assets/bg-login.jpg');
   background-size: cover;
   background-position: center;
+  overflow: hidden;
   color: white;
+  font-family: 'Segoe UI', sans-serif;
 }
 
 .sidebar {
-  width: 200px;
-  background: rgba(28, 35, 49, 0.95);
-  border-right: 2px solid #00d4c6;
-  padding: 20px;
+  width: 220px;
+  background: rgba(20, 26, 38, 0.95);
+  border-right: 1px solid #00d4c6;
+  padding: 25px 15px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 15px;
 }
 
-.sidebar h2 {
+.sidebar-brand {
   text-align: center;
-  margin-bottom: 20px;
+  font-size: 1.5rem;
+  margin-bottom: 30px;
+  color: #00d4c6;
 }
 
 .sidebar a {
-  display: block;
-  padding: 10px;
+  padding: 12px;
   border-radius: 10px;
-  border: 2px solid #00d4c6;
+  border: 1px solid rgba(0, 212, 198, 0.4);
   color: white;
   text-decoration: none;
   text-align: center;
-  width: 100%;
-  box-sizing: border-box; 
+  transition: 0.3s;
 }
 
-.sidebar a:hover {
-  background: #00bfa6;
-  color: black;
+.sidebar a:hover, .sidebar a.active {
+  background: #00d4c6;
+  color: #1c2331;
+  font-weight: bold;
 }
 
-.main {
+.main-container {
   flex: 1;
   display: flex;
   flex-direction: column;
-  position: relative;
+  height: 100vh;
 }
 
 .topbar {
+  width: 100%;
+  height: 70px;
   display: flex;
-  justify-content: flex-end;
-  padding: 15px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  background: transparent;
+  box-sizing: border-box;
 }
 
-.topbar button {
-  width: 150px;
-  padding: 10px 16px;
-  background: #00bfa6;
-  border: none;
-  border-radius: 10px;
+.topbar-left { flex: 1; }
+
+.topbar-center { 
+  flex: 2; 
+  display: flex; 
+  justify-content: center; 
+}
+
+.topbar-right { 
+  flex: 1; 
+  display: flex; 
+  justify-content: flex-end;
+}
+
+.topbar-title {
+  color: #00d4c6;
+  font-size: 1.6rem;
+  margin: 0;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-shadow: 0 0 10px rgba(0, 212, 198, 0.3);
+}
+
+.btn-logout {
+  background: #e63946;
   color: white;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: 0.3s;
 }
 
-.topbar button:hover {
-  background: #02e7d7;
+.btn-logout:hover {
+  background: #b91d2a;
+  transform: scale(1.05);
 }
 
-.content {
-  padding: 20px;
+.content-scroll {
   flex: 1;
   overflow-y: auto;
-  padding-bottom: 60px;
+  padding: 20px 60px;
 }
 
 .aviso-postulacion {
   color: #ff4d4d;
   font-weight: bold;
-  font-size: 0.9rem;
-  margin-top: 30px;
   text-align: left;
+  margin-top: 40px;
+  font-size: 0.9rem;
+  max-width: 600px;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
@@ -98,3 +129,4 @@
   z-index: 1;
   pointer-events: none;
 }
+

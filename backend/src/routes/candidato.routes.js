@@ -5,5 +5,6 @@ const controller = require('../controllers/candidato.controller');
 const auth = require('../middlewares/auth.middleware');
 
 router.get('/perfil', auth, controller.getPerfil);
+router.put('/perfil', auth, controller.updatePerfil);
 
 module.exports = router;

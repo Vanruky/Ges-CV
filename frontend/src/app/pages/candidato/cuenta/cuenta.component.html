@@ -1,0 +1,43 @@
+<div class="content">
+  <div class="card">
+    <div class="field">
+      <label>RUT</label>
+      <input [(ngModel)]="perfil.numero_identificacion" [disabled]="!editando">
+    </div>
+
+    <div class="field">
+      <label>Nombre</label>
+      <input [(ngModel)]="perfil.nombre" [disabled]="!editando">
+    </div>
+
+    <div class="field">
+      <label>Apellido paterno</label>
+      <input [(ngModel)]="perfil.apellido_paterno" [disabled]="!editando">
+    </div>
+
+    <div class="field">
+      <label>Apellido materno</label>
+      <input [(ngModel)]="perfil.apellido_materno" [disabled]="!editando">
+    </div>
+
+    <div class="field">
+      <label>Teléfono</label>
+      <input [(ngModel)]="perfil.celular" [disabled]="!editando">
+    </div>
+
+    <div class="field">
+      <label>Correo electrónico</label>
+      <input [(ngModel)]="perfil.correo" [disabled]="!editando">
+    </div>
+
+    <div class="actions single" *ngIf="!editando">
+      <button (click)="activarEdicion()">Actualizar mi información</button>
+    </div>
+
+    <div class="actions double" *ngIf="editando">
+      <button class="btn-cancel" (click)="cancelar()">Cancelar</button>
+      <button class="btn-confirm" (click)="confirmar()">Confirmar</button>
+    </div>
+  </div>
+
+</div>

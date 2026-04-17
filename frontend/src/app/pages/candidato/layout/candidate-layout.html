@@ -1,0 +1,26 @@
+<div class="layout">
+  <div class="sidebar">
+    <h2>Bienvenido</h2>
+    <a routerLink="/candidato/home">Home</a>
+    <a routerLink="/candidato/cuenta">Mi cuenta</a>
+    <a routerLink="/candidato/postulaciones">Postular</a>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <button (click)="logout()">Salir</button>
+    </div>
+
+    <div class="content">
+      <router-outlet></router-outlet>
+      
+      <p class="aviso-postulacion">
+        Recuerde que solo se puede realizar una postulación cada 6 meses para el mismo cargo.
+      </p>
+    </div>
+
+    <footer class="footer">
+      © 2026 GES-CV · Plataforma de Gestión de Talento en Salud
+    </footer>
+  </div>
+</div>

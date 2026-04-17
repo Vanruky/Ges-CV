@@ -1,0 +1,54 @@
+.topbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: #1c2331;
+    padding: 10px;
+    display: flex;
+    justify-content: flex-end;
+    z-index: 10;
+}
+
+.logout-btn {
+    background: red;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.sidebar {
+    position: fixed;
+    top: 50px;
+    left: 0;
+    width: 200px;
+    height: 100%;
+    background: #1c2331;
+    padding: 20px;
+}
+
+.sidebar a {
+    display: block;
+    color: #ccc;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+
+.sidebar a:hover {
+    color: #00d4c6;
+}
+
+.content {
+    margin-left: 220px;
+    margin-top: 70px;
+    padding: 20px;
+    color: white;
+}
+
+.card {
+    background: #1c2331;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}

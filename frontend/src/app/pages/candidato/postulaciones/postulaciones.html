@@ -1,0 +1,35 @@
+<div class="content">
+
+  <div class="card">
+
+    <h3>Postulación</h3>
+
+    <input placeholder="RUT" disabled>
+
+    <input placeholder="Nombre">
+    <input placeholder="Apellido Paterno">
+    <input placeholder="Apellido Materno">
+
+    <select [(ngModel)]="cargo">
+      <option value="">Seleccione cargo</option>
+      <option>Psicologo</option>
+      <option>Enfermero</option>
+    </select>
+
+    <!-- FILE -->
+    <input type="file" (change)="onFile($event)">
+    <p>{{nombreArchivo}}</p>
+
+    <button (click)="postular()">Postular</button>
+
+  </div>
+
+  <div class="card">
+    <p>Realiza tu cuestionario psicológico después de subir tu información</p>
+    <button onclick="window.open('https://forms.google.com','_blank')"> //hay que poner la dirección!
+      Iniciar cuestionario
+    </button>
+  </div>
+
+
+</div>

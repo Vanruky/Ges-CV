@@ -1,0 +1,62 @@
+<div class="home-container">
+  <header class="welcome-header">
+    <h2>Bienvenido, <span>{{nombre}}</span></h2>
+    <p>Este es el resumen de tu actividad en la plataforma GES-CV.</p>
+  </header>
+
+  <div class="dashboard-grid">
+    
+    <section class="dashboard-card">
+      <div class="card-header">
+        <h3>Mis Postulaciones</h3>
+      </div>
+      
+      <div class="card-content">
+        <div *ngIf="postulaciones.length > 0; else sinPostulaciones">
+          <table class="postulaciones-table">
+            <thead>
+              <tr>
+                <th>Fecha de postulación</th>
+                <th>Cargo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let p of postulaciones">
+                <td>{{ p.fecha_postulacion | date:'dd/MM/yyyy' }}</td>
+                <td>{{ p.cargo }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <ng-template #sinPostulaciones>
+          <p class="empty-msg">Sin postulaciones recientes.</p>
+        </ng-template>
+      </div>
+    </section>
+
+    <section class="dashboard-card">
+      <div class="card-header">
+        <h3>Cuestionario Psicológico</h3>
+      </div>
+      
+      <div class="card-content">
+        <div class="status-box" [ngClass]="{'realizado': cuestionarioRealizado === 1, 'pendiente': cuestionarioRealizado === 0}">
+          
+          <p *ngIf="cuestionarioRealizado === 1">
+            Realizado el: <strong>{{ fechaCuestionario | date:'dd/MM/yyyy' }}</strong>
+          </p>
+          
+          <p *ngIf="cuestionarioRealizado === 0">
+            <strong>Pendiente de realizar.</strong>
+          </p>
+
+        </div>
+        
+        <p class="info-note">
+          El cuestionario psicológico solo se puede realizar 1 vez cada 6 meses.
+        </p>
+      </div>
+    </section>
+
+  </div>
+</div>

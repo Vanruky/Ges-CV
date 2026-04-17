@@ -13,8 +13,9 @@ import { HttpClient } from '@angular/common/http';
 export class CuentaComponent implements OnInit {
 
   perfil: any = {};
-  editando = false;
   copia: any = {};
+
+  editando = false;
 
   mostrarModal = false;
   mostrarExito = false;
@@ -23,10 +24,13 @@ export class CuentaComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
+    this.cargarPerfil();
+  }
+
+  cargarPerfil() {
+    const token = localStorage.getItem('token');
     this.http.get<any>('http://localhost:3000/api/candidatos/perfil', {
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('token')
-      }
+      headers: { Authorization: `Bearer ${token}` }
     }).subscribe({
       next: (res) => {
         this.perfil = res;
@@ -57,16 +61,15 @@ export class CuentaComponent implements OnInit {
 
   confirmarCambios() {
     this.mostrarModal = false;
+    const token = localStorage.getItem('token');
 
     this.http.put('http://localhost:3000/api/candidatos/perfil', this.perfil, {
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('token')
-      }
+      headers: { Authorization: `Bearer ${token}` }
     }).subscribe({
       next: () => {
         this.editando = false;
-        this.copia = { ...this.perfil };
         this.mostrarExito = true;
+        this.cargarPerfil();
       },
       error: () => {
         this.mostrarError = true;

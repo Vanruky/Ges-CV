@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
 import { CandidateLayoutComponent } from './pages/candidato/layout/candidate-layout';
-import { HomeComponent } from './pages/candidato/home/home';
+import { HomeComponent } from './pages/candidato/home/home.component';
 import { PostulacionesComponent } from './pages/candidato/postulaciones/postulaciones.component';
 import { CuentaComponent } from './pages/candidato/cuenta/cuenta.component';
 
@@ -12,6 +12,7 @@ export const routes: Routes = [
   {
     path: 'candidato',
     component: CandidateLayoutComponent,
+    //canActivate: [authGuard], // Descomentar esto cuando este listo
     children: [
       { path: 'home', component: HomeComponent },
       { path: 'cuenta', component: CuentaComponent },

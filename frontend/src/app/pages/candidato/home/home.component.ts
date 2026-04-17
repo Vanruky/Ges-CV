@@ -7,15 +7,18 @@ import { AuthService } from '@services/auth.service';
   selector: 'app-home',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './home.html',
-  styleUrls: ['./home.css']
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
 
   nombre: string = '';
   postulaciones: any[] = [];
+
+  cuestionarioRealizado: number = 0; 
+  fechaCuestionario: string | null = null;
+
   cargando: boolean = true;
-  error: string = '';
 
   constructor(
     private http: HttpClient,
@@ -33,12 +36,16 @@ export class HomeComponent implements OnInit {
       }
     }).subscribe({
       next: (res) => {
-        this.nombre = res.usuario?.nombre_completo || 'Usuario';
+        this.nombre = res.usuario?.nombre_completo || 'Candidato';
         this.postulaciones = res.postulaciones || [];
+
+        this.cuestionarioRealizado = res.cuestionario?.realizado ?? 0;
+        this.fechaCuestionario = res.cuestionario?.fecha || null;
+        
         this.cargando = false;
       },
-      error: () => {
-        this.error = 'Error al cargar datos';
+      error: (err) => {
+        console.error('Error al cargar dashboard:', err);
         this.cargando = false;
       }
     });

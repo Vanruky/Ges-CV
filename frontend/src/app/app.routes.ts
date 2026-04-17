@@ -3,7 +3,7 @@ import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
 import { CandidateLayoutComponent } from './pages/candidato/layout/candidate-layout';
 import { HomeComponent } from './pages/candidato/home/home';
-import { PostulacionesComponent } from './pages/candidato/postulaciones/postulaciones';
+import { PostulacionesComponent } from './pages/candidato/postulaciones/postulaciones.component';
 import { CuentaComponent } from './pages/candidato/cuenta/cuenta.component';
 
 export const routes: Routes = [

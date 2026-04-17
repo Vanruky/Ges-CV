@@ -1,0 +1,209 @@
+.content-postulaciones {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding-top: 10px;
+}
+
+.card-postular {
+  width: 100%;
+  max-width: 800px;
+  background: rgba(28, 35, 49, 0.92);
+  border: 2px solid #00d4c6; 
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+h3 {
+  color: #00d4c6;
+  font-size: 1.6rem;
+  margin-top: 0;
+  margin-bottom: 25px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.field { display: flex; flex-direction: column; }
+
+.field label {
+  color: white;
+  font-weight: bold;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+}
+
+.field input, .field select {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #00d4c6;
+  background: rgba(255, 255, 255, 0.08); 
+  color: white;
+  outline: none;
+  font-size: 1rem;
+}
+
+.field select option {
+  background: #1c2331; 
+  color: white;
+}
+
+.field input:disabled {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(0, 212, 198, 0.2);
+  color: rgba(255, 255, 255, 0.4);
+  cursor: not-allowed;
+}
+
+.upload-section {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.upload-box {
+  width: 100%;
+  border: 2px dashed rgba(0, 212, 198, 0.4); 
+  border-radius: 50px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.btn-file {
+  background: #00bfa6;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.btn-subir {
+  background: #00bfa6;
+  color: white;
+  width: 100%;
+  max-width: 200px;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.1s, background 0.3s;
+}
+
+.btn-subir:hover { background: #008f7d; }
+
+.cuestionario-container {
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 800px;
+  padding: 0 10px;
+}
+
+.cuestionario-container p {
+  color: white;
+  font-size: 1.1rem;
+  margin: 0;
+  max-width: 450px;
+}
+
+.btn-cuestionario {
+  background: #5000b0;
+  color: white;
+  padding: 15px 40px;
+  border: none;
+  border-radius: 11px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(80, 0, 176, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-cuestionario:hover {
+  background: #6200d4;
+  transform: translateY(-2px);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(5px);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 2000;
+}
+
+.modal-card {
+  width: 90%;
+  max-width: 400px;
+  background: #1c2331;
+  border: 2px solid #00d4c6;
+  border-radius: 20px;
+  padding: 30px;
+  text-align: center;
+  animation: modalIn 0.3s ease-out;
+}
+
+@keyframes modalIn {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-card.success { 
+  border-color: #00ff95; 
+}
+
+.modal-card.success h3 { 
+  color: #00ff95; 
+}
+
+.modal-card.error { 
+  border-color: #ff4d4d; 
+}
+
+.modal-card.error h3 { 
+  color: #ff4d4d; 
+}
+
+.modal-body { 
+  color: white; 
+  margin: 20px 0; 
+  line-height: 1.5; 
+}
+
+.btn-modal-confirm, .btn-modal-error {
+  padding: 10px 30px;
+  border-radius: 8px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.btn-modal-confirm { 
+  background: #00bfa6;
+  color: white; 
+}
+
+.btn-modal-error { 
+  background: #ff4d4d; 
+  color: white; 
+}

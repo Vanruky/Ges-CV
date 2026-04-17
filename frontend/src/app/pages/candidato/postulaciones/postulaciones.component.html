@@ -1,0 +1,82 @@
+<div class="content-postulaciones">
+  <div class="card-postular">
+    <h3>Enviar postulación</h3>
+
+    <div class="form-grid">
+      <div class="field">
+        <label>Rut</label>
+        <input [value]="perfil.numero_identificacion" disabled>
+      </div>
+      <div class="field">
+        <label>Nombre</label>
+        <input [value]="perfil.nombre" disabled>
+      </div>
+
+      <div class="field">
+        <label>Apellido paterno</label>
+        <input [value]="perfil.apellido_paterno" disabled>
+      </div>
+      <div class="field">
+        <label>Apellido materno</label>
+        <input [value]="perfil.apellido_materno" disabled>
+      </div>
+
+      <div class="field">
+        <label>Estamento</label>
+        <select [(ngModel)]="estamentoSeleccionado">
+          <option value="">Seleccione estamento</option>
+          <option *ngFor="let est of estamentos" [value]="est">{{est}}</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Cargo</label>
+        <select [(ngModel)]="cargoSeleccionado">
+          <option value="">Seleccione cargo</option>
+          <option *ngFor="let c of cargos" [value]="c">{{c}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="upload-section">
+      <div class="upload-box">
+        <label class="btn-file">
+          Elegir archivo PDF
+          <input type="file" (change)="onFile($event)" accept="application/pdf" hidden>
+        </label>
+        <span class="file-name">{{ nombreArchivo || 'No se ha seleccionado archivo' }}</span>
+      </div>
+      <button class="btn-subir" (click)="postular()">Subir</button>
+    </div>
+  </div>
+
+  <div class="cuestionario-container">
+    <p>Realiza tu cuestionario psicológico después de subir tu información</p>
+    <button class="btn-cuestionario" (click)="irACuestionario()">
+      Iniciar cuestionario
+    </button>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="mostrarExito">
+  <div class="modal-card success">
+    <h3>¡Envío Exitoso!</h3>
+    <div class="modal-body">
+      <p>Tu postulación ha sido recibida correctamente en nuestro sistema.</p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal-confirm" (click)="cerrarModales()">ENTENDIDO</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="mostrarError">
+  <div class="modal-card error">
+    <h3>Error en el proceso</h3>
+    <div class="modal-body">
+      <p>Asegúrate de completar todos los campos y que el PDF no supere los 5MB.</p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal-error" (click)="cerrarModales()">CERRAR</button>
+    </div>
+  </div>
+</div>

@@ -7,36 +7,57 @@
         <h2>Crear Cuenta</h2>
 
         <div class="grid">
-            <input [(ngModel)]="nombre" placeholder="Nombre">
-            <input [(ngModel)]="apellido_paterno" placeholder="Apellido Paterno">
-            <input [(ngModel)]="apellido_materno" placeholder="Apellido Materno">
+
+            <input [(ngModel)]="nombre" (input)="filtrarTexto($event, 'nombre')" placeholder="Nombre">
+
+            <input [(ngModel)]="apellido_paterno" (input)="filtrarTexto($event, 'apellido_paterno')"
+                placeholder="Apellido Paterno">
+
+            <input [(ngModel)]="apellido_materno" (input)="filtrarTexto($event, 'apellido_materno')"
+                placeholder="Apellido Materno">
+
         </div>
 
         <div class="grid">
-            <select [(ngModel)]="tipo_identificacion">
+            <select [(ngModel)]="tipo_identificacion" (change)="onTipoChange()">
                 <option value="">Tipo de identificación</option>
                 <option value="RUT">RUT</option>
                 <option value="RUT_PROVISORIO">RUT Provisorio</option>
                 <option value="PASAPORTE">Pasaporte</option>
             </select>
 
-            <input [(ngModel)]="numero_identificacion" placeholder="Número de identificación">
-        </div>
-
-    <div class="grid">
-        <input [(ngModel)]="celular" placeholder="Celular">
+            <input [value]="numero_identificacion" (input)="filtrarIdentificacion($event)"
+                placeholder="Número de identificación">
         </div>
 
         <div class="grid">
-        <input [(ngModel)]="correo" placeholder="Correo electrónico">
+            <input [(ngModel)]="celular" (input)="filtrarCelular($event)" placeholder="Celular">
+            <p *ngIf="errorCelular" class="error">{{ errorCelular }}</p>
+        </div>
+
+        <div class="grid">
+            <input [(ngModel)]="correo" placeholder="Correo electrónico">
+            <p *ngIf="errorCorreo" class="error">{{ errorCorreo }}</p>
         </div>
 
         <div class="grid">
             <input [(ngModel)]="password" type="password" placeholder="Contraseña">
+            <p *ngIf="errorPassword" class="error">{{ errorPassword }}</p>
             <input [(ngModel)]="confirmPassword" type="password" placeholder="Confirmar contraseña">
+            <p *ngIf="errorConfirmPassword" class="error">{{ errorConfirmPassword }}</p>
         </div>
 
-        <button (click)="register()">Registrarse y continuar </button>
+        <p *ngIf="generalError" class="error">
+            {{ generalError }}
+        </p>
+
+        <p *ngIf="successMessage" class="success">
+            {{ successMessage }}
+        </p>
+
+        <button (click)="register()">
+            Registrarse
+        </button>
 
         <div class="login">
             ¿Ya tienes una cuenta?

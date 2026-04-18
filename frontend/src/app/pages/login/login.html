@@ -7,16 +7,27 @@
         <h2>Iniciar Sesión</h2>
 
         <label>Correo electrónico</label>
-        <input [(ngModel)]="correo" placeholder="Correo electrónico">
+        <input [(ngModel)]="correo" (ngModelChange)="validateFields()" placeholder="Correo electrónico">
+
+        <p *ngIf="correoError" class="error">
+            {{ correoError }}
+        </p>
+
 
         <label>Contraseña</label>
-        <input [(ngModel)]="password" type="password" placeholder="Contraseña">
+        <input [(ngModel)]="password" type="password" (ngModelChange)="validateFields()" placeholder="Contraseña">
+
+        <p *ngIf="passwordError" class="error">
+            {{ passwordError }}
+        </p>
 
         <div class="recover">
             <span (click)="goToRecover()">¿No recuerdas tu contraseña?</span>
         </div>
 
-        <button (click)="login()">Ingresar</button>
+        <button (click)="login()" [disabled]="correoError || passwordError || !correo || !password">
+            Ingresar
+        </button>
 
         <div class="register">
             ¿Aún no tienes una cuenta?

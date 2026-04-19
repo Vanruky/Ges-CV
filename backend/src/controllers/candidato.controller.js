@@ -1,4 +1,69 @@
-const { Candidato } = require('../models');
+const Candidato = require('../models/candidatoModel');
+
+exports.getPerfil = async (req, res) => {
+    try {
+        const id_usuario = req.usuario.id; 
+        
+        // funcion obtener perfil del modelo
+        const candidato = await Candidato.obtenerPerfil(id_usuario);
+
+        if (!candidato) {
+            return res.status(404).json({ mensaje: "Candidato no encontrado" });
+        }
+
+        // alias
+        res.json({
+            ...candidato,
+            nombre_completo: `${candidato.usuario_nombre} ${candidato.apellido_p} ${candidato.apellido_m}`
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+exports.updatePerfil = async (req, res) => {
+    try {
+        const id_usuario = req.usuario.id;
+        const nuevosDatos = req.body; // El front debe mandar num_doc, usuario_nombre, etc.
+
+        const candidatoActual = await Candidato.obtenerPerfil(id_usuario);
+
+        if (!candidatoActual) {
+            return res.status(404).json({ mensaje: "Candidato no encontrado" });
+        }
+
+        // 2. Lógica de bloqueo usando los alias: num_doc, usuario_nombre, etc.
+        const intentaCambiarIdentidad = 
+            nuevosDatos.num_doc !== candidatoActual.num_doc ||
+            nuevosDatos.usuario_nombre !== candidatoActual.usuario_nombre ||
+            nuevosDatos.apellido_p !== candidatoActual.apellido_p ||
+            nuevosDatos.apellido_m !== candidatoActual.apellido_m;
+
+        // Usamos tu alias rut_edit
+        if (intentaCambiarIdentidad && candidatoActual.rut_edit === 1) {
+            return res.status(400).json({ 
+                mensaje: "Identidad bloqueada: Ya realizaste tu única edición permitida." 
+            });
+        }
+
+        // 3. Preparamos el objeto con tus nombres de campo
+        const datosParaActualizar = {
+            ...nuevosDatos,
+            rut_edit: intentaCambiarIdentidad ? 1 : candidatoActual.rut_edit
+        };
+
+        // las funciones de models
+        await Candidato.actualizarPerfil(id_usuario, datosParaActualizar);
+
+        res.json({ mensaje: "Perfil actualizado con éxito en el sistema del hospital" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
+
+/*const { Candidato } = require('../models');
 const USE_MOCK = true; 
 let candidatoMock = {
     id_candidato: 1,
@@ -84,7 +149,9 @@ exports.updatePerfil = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-/*  < dejo el prospecto de código limpio asumiendo que SQL esta conectado, toca verificar si hay cambios despues
+
+
+< dejo el prospecto de código limpio asumiendo que SQL esta conectado, toca verificar si hay cambios despues
 const { Candidato } = require('../models');
 
 exports.getPerfil = async (req, res) => {

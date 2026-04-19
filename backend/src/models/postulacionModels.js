@@ -1,0 +1,46 @@
+const db =require('../config/db')
+
+const Postulacion = {
+
+    // crear una nueva postulación
+    crear: async (id_candidato, datos) => {
+        const sql = `
+            INSERT INTO postulacion 
+            (id_candidato, id_cargo, id_estamento)
+            VALUES (?,?,?)
+        `;
+
+        const valores = [
+            id_candidato,
+            datos.id_cargo,
+            datos.id_estamento
+        ];
+        
+        // guardado de la info
+        const [result] = await db.query(sql, valores);
+        
+        // devuelve la fila que se acaba de crear con el id
+        return result.insertId;
+    },
+
+    // obtener la informacion del candidato con el id
+    obtenerPorCandidato: async (id_candidato) => {
+        const sql = `
+            SELECT 
+                p.id_postulacion, 
+                c.nombre AS nombre_cargo, 
+                e.nombre AS nombre_estamento, 
+                p.fecha_postulacion, 
+                ep.nombre AS nombre_estado
+            FROM postulacion p
+            JOIN cargo c ON p.id_cargo = c.id_cargo
+            JOIN estamento e ON p.id_estamento = e.id_estamento
+            JOIN estado_postulacion ep ON p.id_estado = ep.id_estado
+            WHERE p.id_candidato = ?
+        `;
+        const [rows] = await db.query(sql, [id_candidato]);
+        return rows;
+    }
+};
+
+module.exports = Postulacion;

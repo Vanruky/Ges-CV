@@ -1,5 +1,6 @@
 // test_db.js
-const Candidato = require('./src/models/usuarioModel');
+
+import Candidato from './src/models/usuarioModel.js';
 
 async function probarRegistroCompleto() {
     try {

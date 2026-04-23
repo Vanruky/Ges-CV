@@ -1,3 +1,8 @@
+/*esto lo comenté porque me recomienda moverlo 
+para los archivos de controllers para no tener 
+tanta carpeta con logica
+
+
 const bcrypt = require('bcrypt');
 const { Usuario, Candidato } = require('../models');
 
@@ -65,4 +70,4 @@ exports.register = async (data) => {
         await t.rollback();
         throw error;
     }
-};
+}; */

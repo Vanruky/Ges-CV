@@ -8,6 +8,7 @@ const Candidato = {
         return result.insertId; 
     },
 
+
     // funcion para ingresar inf de la cuenta
     crearPerfil: async (id_usuario, datos) => {
         const sql = `
@@ -84,7 +85,13 @@ const Candidato = {
         ];
         const [result] = await db.query(sql, valores);
         return result.affectedRows > 0; 
-    }
+    },
+
+    actualizarContrasenia: async (id_usuario, nuevoPasswordHash) => {
+    const sql = `UPDATE usuario SET password_hash = ? WHERE id_usuario = ?`;
+    const [result] = await db.query(sql, [nuevoPasswordHash, id_usuario]);
+    return result.affectedRows > 0;
+},
 };
 
 module.exports = Candidato;

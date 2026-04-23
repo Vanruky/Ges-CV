@@ -1,0 +1,364 @@
+.page-title {
+    width: 100%;
+    max-width: 1000px;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 30px;
+}
+
+.filters {
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.search-box {
+    width: 40%;
+    max-width: 400px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 2px solid #7904ff;
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    font-size: 1rem;
+    outline: none;
+}
+
+.search-box input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.date-filters {
+    display: flex;
+    gap: 15px;
+}
+
+.date-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.date-field label {
+    color: #00d4c6;
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+}
+
+.date-field input {
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 2px solid #00d4c6;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+}
+
+.actions {
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.btn {
+    padding: 12px 25px;
+    border-radius: 10px;
+    border: 2px solid;
+    font-weight: bold;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 0.5px;
+    background: transparent;
+}
+
+.export-dropdown {
+    position: relative;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    background: rgba(28, 35, 49, 0.95);
+    border: 1px solid rgba(0, 212, 198, 0.3);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.2s ease;
+    z-index: 1000;
+}
+
+.dropdown-menu button {
+    width: 100%;
+    padding: 10px 15px;
+    background: transparent;
+    border: none;
+    color: white;
+    text-align: left;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s ease;
+}
+
+.dropdown-menu button:hover {
+    background: rgba(0, 212, 198, 0.15);
+}
+
+.export {
+    background-color: rgba(28, 35, 49, 0.51);
+    border: 2px solid #7904ff;
+    color: white;
+}
+
+.export:hover {
+    background: rgba(28, 35, 49, 0.92);
+    transform: translateY(-2px);
+}
+
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    color: white;
+    font-weight: 500;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    animation: fadeIn 0.3s ease;
+}
+
+.toast.error {
+    background: #e74c3c;
+}
+
+.toast.success {
+    background: #2ecc71;
+}
+
+.toast.warning {
+    background: #f39c12;
+}
+
+.toast.info {
+    background: #3498db;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.generate-container {
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    justify-content: center; 
+    margin-top: 30px;
+}
+
+.generar {
+    border: 2px solid rgb(112, 243, 234);
+    background: rgba(0, 212, 198, 0.921);
+    padding: 12px 25px;
+    color: #ffffff;
+}
+
+.generar:hover {
+    background: rgba(0, 212, 198, 0.15);
+    transform: translateY(-2px);
+}
+
+.modal-overlay {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.65);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+}
+
+.modal-card {
+    width: 420px;
+    max-width: 90%;
+    background: rgba(28, 35, 49, 0.95);
+    border: 2px solid #00d4c6;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    animation: pop 0.2s ease;
+}
+
+.modal-card h3 {
+    color: #00d4c6;
+    margin-bottom: 20px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.field label {
+    color: #00d4c6;
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+}
+
+.field input,
+.field select {
+    padding: 10px;
+    border-radius: 10px;
+    border: 2px solid rgba(0, 212, 198, 0.4);
+    background: rgba(255, 255, 255, 0.707);
+    color: rgb(0, 0, 0);
+    outline: none;
+}
+
+.field input::placeholder {
+    color: rgb(0, 0, 0);
+}
+
+.field input[type="file"] {
+    padding: 8px;
+    border: none;
+}
+
+.file-hint {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
+    margin-top: 4px;
+}
+
+.file-name {
+    margin-top: 5px;
+    font-size: 12px;
+    color: #00d4c6;
+}
+
+.file-preview {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    background: rgba(0, 212, 198, 0.1);
+    border: 1px solid rgba(0, 212, 198, 0.3);
+    padding: 8px 12px;
+    border-radius: 8px;
+}
+
+.file-icon {
+    font-size: 18px;
+}
+
+.file-text {
+    font-size: 13px;
+    color: #00d4c6;
+}
+
+.remove-file {
+    background: transparent;
+    border: none;
+    color: #ff6b6b;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-left: 3px;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.remove-file:hover {
+    transform: scale(1.2);
+    color: #ff3b3b;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.modal-buttons button {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.cancel {
+    border: 1px solid #00d4c6;
+    background: rgba(255,255,255,0.1);
+    color: #ffffff;
+}
+
+.cancel:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.confirm {
+    border: 1px solid #ffffff;
+    background: #00d4c6;
+    color: #ffffff;
+}
+
+.confirm:hover {
+    background: #00b3a6;
+}
+
+@keyframes pop {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.loader {
+    width: 18px;
+    height: 18px;
+    border: 2px solid transparent;
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: inline-block;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

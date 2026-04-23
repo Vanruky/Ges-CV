@@ -1,0 +1,270 @@
+.page-title {
+    width: 100%;
+    max-width: 1000px;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 30px;
+}
+
+.filters {
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.search-box {
+    width: 40%;
+    max-width: 400px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 2px solid #7904ff;
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    font-size: 1rem;
+    outline: none;
+}
+
+.search-box input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.date-filters {
+    display: flex;
+    gap: 15px;
+}
+
+.date-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.date-field label {
+    color: #00d4c6;
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+}
+
+.date-field input {
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 2px solid #00d4c6;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+}
+
+.actions {
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.selection-info {
+    margin-right: auto; 
+    color: #ffffff80;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.btn {
+    padding: 12px 25px;
+    border-radius: 10px;
+    border: 2px solid;
+    font-weight: bold;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 0.5px;
+    background: transparent;
+}
+
+.export {
+    background-color: rgba(28, 35, 49, 0.51);
+    border: 2px solid #7904ff;
+    color: white;
+}
+
+.export:hover {
+    background: rgba(28, 35, 49, 0.92);
+    transform: translateY(-2px);
+}
+
+.export-dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    background: rgba(28, 35, 49, 0.95);
+    border: 1px solid rgba(0, 212, 198, 0.3);
+    border-radius: 10px;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+.dropdown-menu button {
+    width: 100%;
+    padding: 10px 15px;
+    background: transparent;
+    border: none;
+    color: white;
+    text-align: left;
+    cursor: pointer;
+}
+
+.depurar {
+    background-color: rgba(28, 35, 49, 0.51);
+    border: 2px solid #7904ff;
+    color: white;
+}
+
+.depurar:hover {
+    background: rgba(28, 35, 49, 0.92);
+    transform: translateY(-2px);
+}
+
+.btn.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: auto; 
+}
+
+.btn.disabled:hover {
+    background: rgba(28, 35, 49, 0.51);
+}
+
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    color: white;
+    font-weight: 500;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    animation: fadeIn 0.3s ease;
+}
+
+.toast.error {
+    background: #e74c3c;
+}
+
+.toast.success {
+    background: #2ecc71;
+}
+
+.toast.warning {
+    background: #f39c12;
+}
+
+.toast.info {
+    background: #3498db;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    backdrop-filter: blur(4px);
+}
+
+.modal {
+    background: #ffffff;
+    padding: 28px;
+    border-radius: 14px;
+    width: 380px;
+    text-align: center;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+    animation: pop 0.18s ease-out;
+}
+
+.modal h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #2c2c2c;
+}
+
+.modal p {
+    font-size: 14px;
+    color: #666;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 22px;
+    gap: 12px;
+}
+
+.modal button {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.cancel {
+    background: #f3f4f6;
+    color: #4b5563;
+}
+
+.cancel:hover {
+    background: #e5e7eb;
+}
+
+.delete {
+    background: #5a01bf;
+    color: white;
+}
+
+.delete:hover {
+    background: #7c09ff;
+}
+
+@keyframes pop {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}

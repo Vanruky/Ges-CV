@@ -1,0 +1,138 @@
+:host {
+    display: block;
+    width: 100%;
+    max-width: 1000px;
+    margin-top: 30px;
+}
+
+.table-wrapper {
+    width: 100%;
+}
+
+.table-wrapper table {
+    width: 100%;
+}
+
+.card-table {
+    width: 100%;
+    background: rgba(28, 35, 49, 0.92);
+    border: 2px solid #00d4c6;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: transparent;
+    table-layout: fixed;
+}
+
+th,
+td {
+    padding: 16px 16px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+th {
+    color: #00d4c6;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    padding-top: 18px;
+    padding-bottom: 18px;
+    border-bottom: 2px solid rgba(0, 212, 198, 0.25);
+}
+
+td {
+    color: white;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+tbody tr {
+    transition: all 0.2s ease;
+}
+
+tbody tr:hover {
+    background: rgba(0, 212, 198, 0.08);
+}
+
+th:nth-child(3),
+td:nth-child(3) {
+    text-align: center;
+}
+
+.btn-pdf {
+    border: none;
+    background: rgba(248, 255, 255, 0.15);
+    color: #00d4c6;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 4px 0;
+}
+
+.btn-pdf:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.estado {
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.estado.ok {
+    background: rgba(0, 255, 149, 0.15);
+    color: #00ff95;
+}
+
+.estado.proceso {
+    background: rgba(255, 179, 0, 0.15);
+    color: #ffb300;
+}
+
+.estado.rechazado {
+    background: rgba(255, 77, 77, 0.15);
+    color: #ff4d4d;
+}
+
+th:nth-child(1) {
+    width: 20%;
+}
+
+th:nth-child(2) {
+    width: 20%;
+}
+
+th:nth-child(3) {
+    width: 25%;
+}
+
+th:nth-child(4) {
+    width: 15%;
+}
+
+th:nth-child(5) {
+    width: 20%;
+}
+
+th:nth-child(6) {
+    width: 15%;
+}
+
+.badge-user {
+    background: rgba(0, 212, 198, 0.15);
+    color: #00d4c6;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+}

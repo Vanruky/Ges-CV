@@ -1,0 +1,71 @@
+<div class="table-wrapper">
+    <div class="card-table">
+
+        <table>
+            <thead>
+
+                <tr *ngIf="tipo === 'historial'">
+                    <th>Fecha</th>
+                    <th>Postulante</th> <!-- nombre + apellido -->
+                    <th>Cargo</th>
+                    <th>PDF</th>
+                    <th>Estado</th>
+                    <th>Resultado</th>
+                </tr>
+
+                <tr *ngIf="tipo === 'reportes'">
+                    <th>Fecha</th>
+                    <th>Tipo</th>
+                    <th>Descripción</th>
+                    <th>Generado por</th>
+                    <th>Archivo</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <ng-container *ngIf="tipo === 'historial'">
+                    <tr *ngFor="let item of data">
+                        <td>{{ item.fecha }}</td>
+                        <td>{{ item.postulante }}</td>
+                        <td>{{ item.cargo }}</td>
+                        <td><button class="btn-pdf">⬇</button></td>
+                        <td>{{ item.estado }}</td>
+                        <td>{{ item.resultado }}</td>
+                    </tr>
+                </ng-container>
+
+                <ng-container *ngIf="tipo === 'reportes'">
+                    <tr *ngFor="let item of data">
+                        <td>{{ item.fecha_generacion | date:'dd-MM-yyyy HH:mm' }}</td>
+                        <td>
+                            <span class="badge" [ngClass]="item.clase_tipo">
+                                {{ item.tipo_formateado }}
+                            </span>
+                        </td>
+                        <td>{{ item.descripcion }}</td>
+                        <td>
+                            <span class="badge-user">
+                                {{ item.usuario?.nombre || '—' }}
+                            </span>
+                        </td>
+                        <td>
+                            <a *ngIf="item.url_documento" [href]="item.url_documento" target="_blank">
+                                <button class="btn-pdf">⬇</button>
+                            </a>
+                            <span *ngIf="!item.url_documento">—</span>
+                        </td>
+                    </tr>
+                    <tr *ngIf="data.length === 0">
+                        <td colspan="5" style="text-align:center; opacity:0.6;">
+                            No hay reportes disponibles
+                        </td>
+                    </tr>
+                </ng-container>
+
+            </tbody>
+        </table>
+
+    </div>
+</div>

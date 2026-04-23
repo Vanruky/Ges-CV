@@ -1,0 +1,27 @@
+<div class="layout">
+    <div class="sidebar">
+        <h2 class="sidebar-brand">GES-CV</h2>
+        <a routerLink="/admin/home" routerLinkActive="active">Postulaciones</a>
+        <a routerLink="/admin/reports" routerLinkActive="active">Reportes </a>
+    </div>
+
+    <div class="main-container">
+
+        <div class="topbar">
+
+            <div class="topbar-right">
+                <button class="btn-logout" (click)="logout()">Cerrar Sesión</button>
+            </div>
+        </div>
+
+        <div class="content-scroll">
+            <div class="content-wrapper">
+                <router-outlet (activate)="onActivate($event)"></router-outlet>
+            </div>
+        </div>
+
+        <footer class="footer">
+            © 2026 GES-CV · Plataforma de Gestión de Talento en Salud
+        </footer>
+
+</div>

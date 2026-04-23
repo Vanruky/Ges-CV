@@ -1,0 +1,139 @@
+.content-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+}
+
+.content-wrapper>* {
+    width: auto;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.layout {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+        url('/assets/bg-login.jpg');
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.sidebar {
+    width: 220px;
+    background: rgba(20, 26, 38, 0.95);
+    border-right: 1px solid #00d4c6;
+    padding: 25px 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.sidebar-brand {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    color: #00d4c6;
+    font-size: 1.6rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(0, 212, 198, 0.3);
+}
+
+.sidebar a {
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(48, 186, 176, 0.4);
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    background: rgb(112, 243, 234);
+    color: #1c2331;
+    font-weight: bold;
+}
+
+.main-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+.topbar-right {
+    margin-left: auto;
+}
+
+.topbar-title {
+    color: #00d4c6;
+    font-size: 1.6rem;
+    margin: 0;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(0, 212, 198, 0.3);
+}
+
+.btn-logout {
+    background: #5000b0;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-logout:hover {
+    background-color: #6200d4;
+    transform: scale(1.05);
+}
+
+.content-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.aviso-postulacion {
+    color: #ff4d4d;
+    font-weight: bold;
+    text-align: left;
+    margin-top: 50px;
+    font-size: 0.9rem;
+    max-width: 600px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.footer {
+    position: fixed;
+    bottom: 10px;
+    left: 200px;
+    width: calc(100% - 200px);
+    text-align: center;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    letter-spacing: 0.5px;
+    z-index: 1;
+    pointer-events: none;
+}

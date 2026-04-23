@@ -15,7 +15,7 @@
     "module": "preserve",
     "moduleResolution": "bundler",
 
-    "baseUrl": "./src",
+    "baseUrl": "src",
     "paths": {
       "@services/*": ["app/services/*"],
       "@pages/*": ["app/pages/*"]

@@ -1,0 +1,99 @@
+<h2 class="page-title">Reportes</h2>
+
+<div class="filters">
+
+    <div class="search-box">
+        <input type="text" placeholder="Buscar reporte..." [(ngModel)]="filtroTexto"
+            (ngModelChange)="onFiltroChange()" />
+    </div>
+
+    <div class="date-filters">
+
+        <div class="date-field">
+            <label>Desde</label>
+            <input type="date" [(ngModel)]="desde" (change)="onFechaChange()" />
+        </div>
+
+        <div class="date-field">
+            <label>Hasta</label>
+            <input type="date" [(ngModel)]="hasta" (change)="onFechaChange()" />
+        </div>
+
+    </div>
+
+</div>
+
+<app-table [data]="reportes" tipo="reportes"></app-table>
+
+<div class="actions">
+    <div class="export-dropdown">
+
+        <button class="btn export" (click)="toggleExportMenu(); $event.stopPropagation()" [disabled]="reportes.length === 0">
+            Exportar ▼
+        </button>
+        <div class="dropdown-menu" *ngIf="showExportMenu">
+            <button (click)="exportarExcel(); showExportMenu=false">
+                📊 Excel
+            </button>
+            <button (click)="exportarPDF(); showExportMenu=false">
+                📄 PDF
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<div class="generate-container">
+    <button class="btn generar" (click)="abrirModal()">
+        Generar Reporte
+    </button>
+</div>
+
+<div class="modal-overlay" *ngIf="showModal">
+    <div class="modal-card">
+
+        <h3>Generar Reporte</h3>
+
+        <div class="field">
+            <label>Tipo de Reporte</label>
+            <select [(ngModel)]="nuevoReporte.tipo_reporte">
+                <option value="">Seleccionar</option>
+                <option value="DISPONIBILIDAD_POR_CARGO">Disponibilidad por cargo</option>
+                <option value="ALTA_ROTACION">Alta rotación</option>
+                <option value="BAJA_POSTULACION">Baja postulación</option>
+            </select>
+        </div>
+
+        <div class="field">
+            <label>Descripción</label>
+            <input type="text" [(ngModel)]="nuevoReporte.descripcion" placeholder="Opcional..." />
+        </div>
+
+        <div class="field">
+            <label>Adjuntar archivo</label>
+
+            <input type="file" (change)="onFileSelected($event)" accept=".pdf,.xlsx,.xls" />
+            <small class="file-hint">Máximo 5MB • PDF o Excel</small>
+
+            <div class="file-preview" *ngIf="archivoNombre">
+                <span class="file-icon">{{ getFileIcon() }}</span>
+                <span class="file-text">{{ archivoNombre }}</span>
+                <button class="remove-file" (click)="eliminarArchivo()">✕</button>
+            </div>
+        </div>
+
+        <div class="modal-buttons">
+            <button class="cancel" (click)="cerrarModal()">Cancelar</button>
+            <button class="confirm" (click)="generarReporte()" [disabled]="loading">
+                <span *ngIf="!loading">Generar</span>
+                <span *ngIf="loading" class="loader"></span>
+            </button>
+        </div>
+
+        <div class="toast" *ngIf="toast.visible" [ngClass]="toast.tipo">
+            {{ toast.mensaje }}
+        </div>
+
+    </div>
+
+</div>

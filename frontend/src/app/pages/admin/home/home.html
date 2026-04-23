@@ -1,0 +1,71 @@
+<h2 class="page-title">Historial de Postulaciones</h2>
+
+<div class="filters">
+
+    <div class="search-box">
+        <input type="text" placeholder="Buscar postulante o cargo..." [(ngModel)]="filtroTexto"
+            (ngModelChange)="onFiltroChange()" />
+    </div>
+
+    <div class="date-filters">
+        <div class="date-field">
+            <label>Desde</label>
+            <input type="date" [(ngModel)]="desde" (change)="onFechaChange()" />
+        </div>
+
+        <div class="date-field">
+            <label>Hasta</label>
+            <input type="date" [(ngModel)]="hasta" (change)="onFechaChange()" />
+        </div>
+    </div>
+
+</div>
+
+<app-table [data]="postulantes" tipo="historial"></app-table>
+
+<div class="actions">
+    <span class="selection-info">
+        {{ cantidadSeleccionados }} seleccionados
+    </span>
+
+    <div class="export-dropdown">
+        <button class="btn export" (click)="toggleExportMenu(); $event.stopPropagation()"
+            [class.disabled]="cantidadSeleccionados === 0">
+            Exportar ▼
+        </button>
+
+        <div class="dropdown-menu" *ngIf="showExportMenu">
+            <button (click)="exportarExcel(); showExportMenu=false">
+                📊 Excel
+            </button>
+        </div>
+    </div>
+
+    <button class="btn depurar" (click)="depurar()" [class.disabled]="cantidadSeleccionados === 0">
+        Depurar
+    </button>
+</div>
+
+<div class="toast" *ngIf="toastVisible" [ngClass]="toastType">
+    {{ toastMessage }}
+</div>
+
+<div class="modal-overlay" *ngIf="showModal">
+    <div class="modal">
+
+        <h3>Confirmación</h3>
+
+        <p>{{ modalMessage }}</p>
+
+        <div class="modal-buttons">
+            <button class="cancel" (click)="cancelarEliminar()">
+                Cancelar
+            </button>
+
+            <button class="delete" (click)="confirmarEliminar()">
+                Eliminar
+            </button>
+        </div>
+
+    </div>
+</div>

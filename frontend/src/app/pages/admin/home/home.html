@@ -2,70 +2,92 @@
 
 <div class="filters">
 
-    <div class="search-box">
-        <input type="text" placeholder="Buscar postulante o cargo..." [(ngModel)]="filtroTexto"
-            (ngModelChange)="onFiltroChange()" />
-    </div>
+  <input type="text"
+    placeholder="Buscar..."
+    [(ngModel)]="filtroTexto"
+    (ngModelChange)="onFiltroChange()" />
 
-    <div class="date-filters">
-        <div class="date-field">
-            <label>Desde</label>
-            <input type="date" [(ngModel)]="desde" (change)="onFechaChange()" />
-        </div>
-
-        <div class="date-field">
-            <label>Hasta</label>
-            <input type="date" [(ngModel)]="hasta" (change)="onFechaChange()" />
-        </div>
-    </div>
+  <div class="date-filters">
+    <input type="date" [(ngModel)]="desde" (change)="onFechaChange()" />
+    <input type="date" [(ngModel)]="hasta" (change)="onFechaChange()" />
+  </div>
 
 </div>
 
-<app-table [data]="postulantes" tipo="historial"></app-table>
+<!-- SELECT ALL -->
+<div class="select-all">
+  <label>
+    <input type="checkbox"
+      [(ngModel)]="selectAllChecked"
+      (change)="toggleSelectAll()"
+      [disabled]="!postulantes.length" />
 
+    Seleccionar todos ({{ cantidadFiltrados }})
+  </label>
+</div>
+
+<div *ngIf="loading">Cargando...</div>
+
+<!-- TABLE -->
+<app-table
+  [data]="postulantes"
+  tipo="historial"
+  [selectedIds]="selectedIds"
+  (toggleSelection)="toggleSelection($event)">
+</app-table>
+
+<!-- ACTIONS -->
 <div class="actions">
-    <span class="selection-info">
-        {{ cantidadSeleccionados }} seleccionados
-    </span>
 
-    <div class="export-dropdown">
-        <button class="btn export" (click)="toggleExportMenu(); $event.stopPropagation()"
-            [class.disabled]="cantidadSeleccionados === 0">
-            Exportar ▼
-        </button>
+  <span>{{ cantidadSeleccionados }} seleccionados</span>
 
-        <div class="dropdown-menu" *ngIf="showExportMenu">
-            <button (click)="exportarExcel(); showExportMenu=false">
-                📊 Excel
-            </button>
-        </div>
-    </div>
+  <div class="export-dropdown">
 
-    <button class="btn depurar" (click)="depurar()" [class.disabled]="cantidadSeleccionados === 0">
-        Depurar
+    <button class="btn export"
+      (click)="toggleExportMenu()"
+      [disabled]="!postulantes.length">
+
+      Exportar ▼ ({{ cantidadSeleccionados }})
     </button>
-</div>
 
-<div class="toast" *ngIf="toastVisible" [ngClass]="toastType">
-    {{ toastMessage }}
-</div>
+    <div *ngIf="showExportMenu" class="dropdown-menu">
 
-<div class="modal-overlay" *ngIf="showModal">
-    <div class="modal">
+      <button (click)="setExportMode('selected')"
+        [disabled]="!cantidadSeleccionados">
+        Exportar seleccionados
+      </button>
 
-        <h3>Confirmación</h3>
-
-        <p>{{ modalMessage }}</p>
-
-        <div class="modal-buttons">
-            <button class="cancel" (click)="cancelarEliminar()">
-                Cancelar
-            </button>
-
-            <button class="delete" (click)="confirmarEliminar()">
-                Eliminar
-            </button>
-        </div>
+      <button (click)="setExportMode('filtered')"
+        [disabled]="!postulantes.length">
+        Exportar filtrados
+      </button>
 
     </div>
+  </div>
+
+  <button class="btn danger"
+    (click)="depurar()"
+    [disabled]="!cantidadSeleccionados">
+
+    Eliminar
+  </button>
+
+</div>
+
+<!-- TOAST -->
+<div *ngIf="toastVisible" class="toast" [ngClass]="toastType">
+  {{ toastMessage }}
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" *ngIf="showModal">
+  <div class="modal">
+
+    <h3>Confirmación</h3>
+    <p>{{ modalMessage }}</p>
+
+    <button (click)="cancelarEliminar()">Cancelar</button>
+    <button (click)="confirmarEliminar()">Eliminar</button>
+
+  </div>
 </div>

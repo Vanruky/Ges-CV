@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 export interface HistorialPostulacion {
     id_postulacion: number;
@@ -8,8 +7,7 @@ export interface HistorialPostulacion {
     postulante: string;
     cargo: string;
     estado: string;
-    resultado: string;
-    selected?: boolean;
+    resultado?: string;
 }
 
 @Injectable({
@@ -17,11 +15,51 @@ export interface HistorialPostulacion {
 })
 export class HistorialPostulacionService {
 
-    private API = 'http://localhost:3000/api';
+    private API = 'http://localhost:3000/api/admin';
 
     constructor(private http: HttpClient) { }
 
-    getHistorialPostulaciones(): Observable<HistorialPostulacion[]> {
-        return this.http.get<HistorialPostulacion[]>(`${this.API}/historial-postulaciones`);
+
+    getHistorialPostulaciones(params?: any) {
+        return this.http.get<HistorialPostulacion[]>(
+            `${this.API}/historial`,
+            { params }
+        );
     }
+
+
+    deletePostulaciones(ids: number[]) {
+        return this.http.post<{ message: string }>(
+            `${this.API}/delete-postulaciones`,
+            { ids }
+        );
+    }
+
+
+    exportExcel(params?: any, ids?: number[]) {
+        return this.http.get(
+            `${this.API}/historial/export/excel`,
+            {
+                params: {
+                    ...params,
+                    ids: ids?.join(',')
+                },
+                responseType: 'blob'
+            }
+        );
+    }
+
+    exportPDF(params?: any, ids?: number[]) {
+        return this.http.get(
+            `${this.API}/historial/export/pdf`,
+            {
+                params: {
+                    ...params,
+                    ids: ids?.join(',')
+                },
+                responseType: 'blob'
+            }
+        );
+    }
+
 }

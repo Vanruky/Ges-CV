@@ -26,9 +26,9 @@ export class ReportsComponent implements OnInit {
   reportes: ReporteUI[] = [];
   reportesOriginal: ReporteUI[] = [];
 
-  filtroTexto: string = '';
-  desde: string = '';
-  hasta: string = '';
+  filtroTexto = '';
+  desde = '';
+  hasta = '';
 
   private filtroSubject = new Subject<void>();
 
@@ -42,7 +42,7 @@ export class ReportsComponent implements OnInit {
   };
 
   archivoSeleccionado: File | null = null;
-  archivoNombre: string = '';
+  archivoNombre = '';
 
   loading = false;
 
@@ -71,19 +71,13 @@ export class ReportsComponent implements OnInit {
     }
   }
 
-  // 🔥 Toggle con validación PRO
-  toggleExportMenu() {
-    if (this.reportes.length === 0) {
-      this.mostrarToast('No hay reportes para exportar', 'warning');
-      return;
-    }
-    this.showExportMenu = !this.showExportMenu;
-  }
-
   cargarReportes() {
+    this.loading = true;
+
     this.reportsService.getReportes().subscribe({
       next: (data) => {
-        const transformados = data.map(r => ({
+
+        const transformados: ReporteUI[] = data.map(r => ({
           ...r,
           tipo_formateado: this.formatearTipo(r.tipo_reporte),
           clase_tipo: this.getClaseTipo(r.tipo_reporte)
@@ -91,14 +85,13 @@ export class ReportsComponent implements OnInit {
 
         this.reportesOriginal = transformados;
         this.reportes = [...transformados];
+        this.loading = false;
       },
-      error: (err) => console.error(err)
+      error: () => {
+        this.loading = false;
+        this.mostrarToast('Error al cargar reportes', 'error');
+      }
     });
-  }
-
-  private parseFecha(fecha: string): Date {
-    if (!fecha) return new Date(NaN);
-    return new Date(fecha);
   }
 
   onFiltroChange() {
@@ -114,14 +107,16 @@ export class ReportsComponent implements OnInit {
 
       const matchTexto =
         !this.filtroTexto ||
-        r.tipo_formateado.toLowerCase().includes(this.filtroTexto.toLowerCase());
+        (r.tipo_formateado ?? '')
+          .toLowerCase()
+          .includes(this.filtroTexto.toLowerCase());
 
-      const fecha = this.parseFecha(r.fecha_generacion);
+      const fecha = r.fecha_generacion ? new Date(r.fecha_generacion) : null;
       const desde = this.desde ? new Date(this.desde) : null;
       const hasta = this.hasta ? new Date(this.hasta) : null;
 
-      const matchDesde = !desde || fecha >= desde;
-      const matchHasta = !hasta || fecha <= hasta;
+      const matchDesde = !desde || (fecha && fecha >= desde);
+      const matchHasta = !hasta || (fecha && fecha <= hasta);
 
       return matchTexto && matchDesde && matchHasta;
     });
@@ -132,8 +127,8 @@ export class ReportsComponent implements OnInit {
       Fecha: r.fecha_generacion,
       Tipo: r.tipo_formateado,
       Descripción: r.descripcion,
-      Usuario: r.usuario?.nombre || '-',
-      Archivo: r.url_documento || '-'
+      Usuario: r.usuario?.correo ?? 'Sin usuario',
+      Archivo: r.url_documento ?? '-'
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(data);
@@ -155,8 +150,8 @@ export class ReportsComponent implements OnInit {
       new Date(r.fecha_generacion).toLocaleString(),
       r.tipo_formateado,
       r.descripcion,
-      r.usuario?.nombre || '-',
-      r.url_documento || '-'
+      r.usuario?.correo ?? 'Sin usuario',
+      r.url_documento ?? '-'
     ]);
 
     doc.text('Listado de Reportes', 14, 15);
@@ -170,17 +165,67 @@ export class ReportsComponent implements OnInit {
     doc.save('reportes.pdf');
   }
 
-  private formatearTipo(tipo: string): string {
-    return tipo.replaceAll('_', ' ');
+  generarReporte() {
+
+    if (!this.nuevoReporte.tipo_reporte) {
+      this.mostrarToast('Debes seleccionar un tipo de reporte', 'warning');
+      return;
+    }
+
+    this.loading = true;
+
+    const formData = new FormData();
+
+    const userId = Number(localStorage.getItem('user_id'));
+
+    formData.append('id_usuario', String(userId));
+    formData.append('tipo_reporte', this.nuevoReporte.tipo_reporte);
+    formData.append('descripcion', this.nuevoReporte.descripcion || '');
+
+    if (this.archivoSeleccionado) {
+      formData.append('archivo', this.archivoSeleccionado);
+    }
+
+    this.reportsService.createReporte(formData).subscribe({
+      next: () => {
+        this.mostrarToast('Reporte creado correctamente', 'success');
+        this.cerrarModal();
+        this.cargarReportes();
+        this.loading = false;
+      },
+      error: () => {
+        this.mostrarToast('Error al crear reporte', 'error');
+        this.loading = false;
+      }
+    });
   }
 
-  private getClaseTipo(tipo: string): string {
-    switch (tipo) {
-      case 'ALTA_ROTACION': return 'badge-warning';
-      case 'BAJA_POSTULACION': return 'badge-danger';
-      case 'DISPONIBILIDAD_POR_CARGO': return 'badge-success';
-      default: return 'badge-default';
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const maxSize = 5 * 1024 * 1024;
+
+    if (file.size > maxSize) {
+      this.mostrarToast('Archivo muy grande (máx 5MB)', 'error');
+      return;
     }
+
+    this.archivoSeleccionado = file;
+    this.archivoNombre = file.name;
+  }
+
+  eliminarArchivo() {
+    this.archivoSeleccionado = null;
+    this.archivoNombre = '';
+  }
+
+  toggleExportMenu() {
+    if (!this.reportes.length) {
+      this.mostrarToast('No hay reportes para exportar', 'warning');
+      return;
+    }
+    this.showExportMenu = !this.showExportMenu;
   }
 
   abrirModal() {
@@ -198,88 +243,6 @@ export class ReportsComponent implements OnInit {
 
     this.archivoSeleccionado = null;
     this.archivoNombre = '';
-
-    const input = document.querySelector('input[type="file"]') as HTMLInputElement;
-    if (input) input.value = '';
-  }
-
-
-  onFileSelected(event: any) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const maxSizeMB = 5;
-    const maxSizeBytes = maxSizeMB * 1024 * 1024;
-
-    if (file.size > maxSizeBytes) {
-      this.mostrarToast(`El archivo supera los ${maxSizeMB}MB`, 'warning');
-      event.target.value = '';
-      return;
-    }
-
-    const allowedTypes = [
-      'application/pdf',
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'application/vnd.ms-excel'
-    ];
-
-    if (!allowedTypes.includes(file.type)) {
-      this.mostrarToast('Solo se permiten archivos PDF o Excel', 'warning');
-      event.target.value = '';
-      return;
-    }
-
-    this.archivoSeleccionado = file;
-    this.archivoNombre = file.name;
-  }
-
-  eliminarArchivo() {
-    this.archivoSeleccionado = null;
-    this.archivoNombre = '';
-
-    const input = document.querySelector('input[type="file"]') as HTMLInputElement;
-    if (input) input.value = '';
-  }
-
-  getFileIcon(): string {
-    if (!this.archivoNombre) return '';
-
-    if (this.archivoNombre.endsWith('.pdf')) return '📄';
-    if (this.archivoNombre.endsWith('.xlsx') || this.archivoNombre.endsWith('.xls')) return '📊';
-
-    return '📁';
-  }
-
-  generarReporte() {
-    if (!this.nuevoReporte.tipo_reporte) {
-      this.mostrarToast('Selecciona un tipo de reporte', 'warning');
-      return;
-    }
-
-    this.loading = true;
-
-    const usuario = this.getUsuarioActual();
-
-    const reporte: Reporte = {
-      tipo_reporte: this.nuevoReporte.tipo_reporte!,
-      descripcion: this.nuevoReporte.descripcion || '',
-      fecha_generacion: new Date().toISOString(),
-      url_documento: this.archivoNombre || '',
-      usuario
-    };
-
-    this.reportsService.createReporte(reporte).subscribe({
-      next: () => {
-        this.loading = false;
-        this.mostrarToast('Reporte generado correctamente', 'success');
-        this.cargarReportes();
-        this.cerrarModal();
-      },
-      error: () => {
-        this.loading = false;
-        this.mostrarToast('Error al generar el reporte', 'error');
-      }
-    });
   }
 
   mostrarToast(mensaje: string, tipo: 'success' | 'error' | 'warning') {
@@ -290,10 +253,17 @@ export class ReportsComponent implements OnInit {
     }, 3000);
   }
 
-  private getUsuarioActual() {
-    return {
-      id: 1,
-      nombre: 'Admin Demo'
-    };
+
+  private formatearTipo(tipo: string): string {
+    return tipo?.replaceAll('_', ' ') ?? '';
+  }
+
+  private getClaseTipo(tipo: string): string {
+    switch (tipo) {
+      case 'ALTA_ROTACION': return 'badge-warning';
+      case 'BAJA_POSTULACION': return 'badge-danger';
+      case 'DISPONIBILIDAD_POR_CARGO': return 'badge-success';
+      default: return 'badge-default';
+    }
   }
 }

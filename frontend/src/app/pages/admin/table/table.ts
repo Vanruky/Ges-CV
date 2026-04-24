@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -12,5 +12,7 @@ export class TableComponent {
 
   @Input() data: any[] = [];
   @Input() tipo: 'historial' | 'reportes' = 'historial';
+  @Input() selectedIds: Set<number> = new Set<number>();
+  @Output() toggleSelection = new EventEmitter<number>();
 
 }

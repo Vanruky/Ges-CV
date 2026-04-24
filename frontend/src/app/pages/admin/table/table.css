@@ -9,6 +9,10 @@
     width: 100%;
 }
 
+.table-wrapper table {
+    width: 100%;
+}
+
 .card-table {
     width: 100%;
     background: rgba(28, 35, 49, 0.92);
@@ -16,32 +20,40 @@
     border-radius: 16px;
     padding: 25px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    overflow-x: auto;
 }
 
+.table-container {
+    overflow-x: auto;
+}
 
 table {
     width: 100%;
     border-collapse: collapse;
     background: transparent;
-    table-layout: auto; 
+    table-layout: fixed;
 }
 
 th,
 td {
-    padding: 14px 12px;
+    padding: 16px 16px;
     text-align: left;
     vertical-align: middle;
-    color: white;
 }
 
 th {
     color: #00d4c6;
     font-weight: bold;
     text-transform: uppercase;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     letter-spacing: 1px;
+    padding-top: 18px;
+    padding-bottom: 18px;
     border-bottom: 2px solid rgba(0, 212, 198, 0.25);
+}
+
+td {
+    color: white;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 tbody tr {
@@ -52,25 +64,10 @@ tbody tr:hover {
     background: rgba(0, 212, 198, 0.08);
 }
 
-
-th:first-child,
-td:first-child {
-    width: 40px;
+th:nth-child(3),
+td:nth-child(3) {
     text-align: center;
 }
-
-input[type="checkbox"] {
-    transform: scale(1.2);
-    cursor: pointer;
-    accent-color: #00d4c6;
-}
-
-td:first-child {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 
 .btn-pdf {
     border: none;
@@ -79,6 +76,7 @@ td:first-child {
     padding: 6px 12px;
     border-radius: 6px;
     cursor: pointer;
+    margin: 4px 0;
 }
 
 .btn-pdf:hover {
@@ -86,10 +84,27 @@ td:first-child {
 }
 
 
-.badge-user {
-    background: rgba(0, 212, 198, 0.15);
-    color: #00d4c6;
-    padding: 4px 10px;
-    border-radius: 8px;
-    font-size: 12px;
+th:nth-child(1) {
+    width: 18%;
 }
+
+th:nth-child(2) {
+    width: 18%;
+}
+
+th:nth-child(3) {
+    width: 30%;
+}
+
+th:nth-child(4) {
+    width: 18%;
+}
+
+th:nth-child(5) {
+    width: 16%;
+}
+
+th:nth-child(6) {
+    width: 16%;
+}
+

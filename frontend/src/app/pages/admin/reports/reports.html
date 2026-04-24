@@ -3,8 +3,10 @@
 <div class="filters">
 
     <div class="search-box">
-        <input type="text" placeholder="Buscar reporte..." [(ngModel)]="filtroTexto"
-            (ngModelChange)="onFiltroChange()" />
+        <input type="text"
+               placeholder="Buscar..."
+               [(ngModel)]="filtroTexto"
+               (ngModelChange)="onFiltroChange()" />
     </div>
 
     <div class="date-filters">
@@ -28,9 +30,12 @@
 <div class="actions">
     <div class="export-dropdown">
 
-        <button class="btn export" (click)="toggleExportMenu(); $event.stopPropagation()" [disabled]="reportes.length === 0">
+        <button class="btn export"
+                (click)="toggleExportMenu(); $event.stopPropagation()"
+                [disabled]="reportes.length === 0">
             Exportar ▼
         </button>
+
         <div class="dropdown-menu" *ngIf="showExportMenu">
             <button (click)="exportarExcel(); showExportMenu=false">
                 📊 Excel
@@ -61,22 +66,27 @@
                 <option value="DISPONIBILIDAD_POR_CARGO">Disponibilidad por cargo</option>
                 <option value="ALTA_ROTACION">Alta rotación</option>
                 <option value="BAJA_POSTULACION">Baja postulación</option>
+                <option value="HISTORIAL_EVALUACIONES">Historial de evaluaciones</option>
             </select>
         </div>
 
         <div class="field">
             <label>Descripción</label>
-            <input type="text" [(ngModel)]="nuevoReporte.descripcion" placeholder="Opcional..." />
+            <input type="text"
+                   [(ngModel)]="nuevoReporte.descripcion"
+                   placeholder="Opcional..." />
         </div>
 
         <div class="field">
             <label>Adjuntar archivo</label>
 
-            <input type="file" (change)="onFileSelected($event)" accept=".pdf,.xlsx,.xls" />
+            <input type="file"
+                   (change)="onFileSelected($event)"
+                   accept=".pdf,.xlsx,.xls" />
+
             <small class="file-hint">Máximo 5MB • PDF o Excel</small>
 
             <div class="file-preview" *ngIf="archivoNombre">
-                <span class="file-icon">{{ getFileIcon() }}</span>
                 <span class="file-text">{{ archivoNombre }}</span>
                 <button class="remove-file" (click)="eliminarArchivo()">✕</button>
             </div>
@@ -84,16 +94,22 @@
 
         <div class="modal-buttons">
             <button class="cancel" (click)="cerrarModal()">Cancelar</button>
-            <button class="confirm" (click)="generarReporte()" [disabled]="loading">
+
+            <button class="confirm"
+                    (click)="generarReporte()"
+                    [disabled]="loading">
+
                 <span *ngIf="!loading">Generar</span>
                 <span *ngIf="loading" class="loader"></span>
+
             </button>
         </div>
 
-        <div class="toast" *ngIf="toast.visible" [ngClass]="toast.tipo">
+        <div class="toast"
+             *ngIf="toast.visible"
+             [ngClass]="toast.tipo">
             {{ toast.mensaje }}
         </div>
 
     </div>
-
 </div>

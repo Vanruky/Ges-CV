@@ -1,22 +1,20 @@
 const db = require('../config/db');
 
 
-const db = require('../config/db');
-
-
+// POSTULACIONES (HISTORIAL)
 const getPostulaciones = async (filters = {}) => {
 
     let sql = `
         SELECT 
             p.id_postulacion,
-            p.fecha_postulacion,
+            p.fecha_postulacion AS fecha,
             ep.nombre AS estado,
             c.nombre AS cargo,
             CONCAT(
                 ca.nombre, ' ',
                 ca.apellido_paterno, ' ',
                 IFNULL(ca.apellido_materno, '')
-            ) AS candidato
+            ) AS postulante
         FROM postulacion p
         JOIN estado_postulacion ep ON p.id_estado = ep.id_estado
         JOIN cargo c ON p.id_cargo = c.id_cargo
@@ -26,26 +24,40 @@ const getPostulaciones = async (filters = {}) => {
 
     const params = [];
 
-    if (filters.estado) {
-        sql += ` AND p.id_estado = ?`;
-        params.push(filters.estado);
-    }
-
-    if (filters.cargo) {
-        sql += ` AND p.id_cargo = ?`;
-        params.push(filters.cargo);
-    }
-
-    if (filters.nombre) {
+    if (filters.texto) {
         sql += `
-            AND CONCAT(ca.nombre, ' ', ca.apellido_paterno, ' ', IFNULL(ca.apellido_materno,'')) LIKE ?
+            AND (
+                LOWER(CONCAT(
+                    ca.nombre, ' ',
+                    ca.apellido_paterno, ' ',
+                    IFNULL(ca.apellido_materno,'')
+                )) LIKE ?
+                OR LOWER(c.nombre) LIKE ?
+                OR LOWER(ep.nombre) LIKE ?
+            )
         `;
-        params.push(`%${filters.nombre}%`);
+        const texto = `%${filters.texto.toLowerCase()}%`;
+        params.push(texto, texto, texto);
     }
 
-    if (filters.desde && filters.hasta) {
-        sql += ` AND p.fecha_postulacion BETWEEN ? AND ?`;
-        params.push(filters.desde, filters.hasta);
+    if (filters.desde) {
+        sql += ` AND p.fecha_postulacion >= ?`;
+        params.push(filters.desde);
+    }
+
+    if (filters.hasta) {
+        sql += ` AND p.fecha_postulacion <= ?`;
+        params.push(filters.hasta);
+    }
+
+    if (filters.ids) {
+        const idsArray = filters.ids.split(',').map(id => Number(id));
+
+        if (idsArray.length > 0) {
+            const placeholders = idsArray.map(() => '?').join(',');
+            sql += ` AND p.id_postulacion IN (${placeholders})`;
+            params.push(...idsArray);
+        }
     }
 
     sql += ` ORDER BY p.fecha_postulacion DESC`;
@@ -68,9 +80,10 @@ const deletePostulaciones = async (ids) => {
 };
 
 
-const getReportes = async () => {
+// REPORTES 
+const getReportes = async (filters = {}) => {
 
-    const [rows] = await db.query(`
+    let sql = `
         SELECT 
             r.id_reporte,
             r.tipo_reporte,
@@ -81,8 +94,36 @@ const getReportes = async () => {
             u.correo AS usuario_correo
         FROM reporte r
         JOIN usuario u ON r.id_usuario = u.id_usuario
-        ORDER BY r.fecha_generacion DESC
-    `);
+        WHERE 1=1
+    `;
+
+    const params = [];
+
+    if (filters.texto) {
+        sql += `
+            AND (
+                REPLACE(LOWER(r.tipo_reporte), '_', ' ') LIKE ?
+                OR LOWER(r.descripcion) LIKE ?
+                OR LOWER(u.correo) LIKE ?
+            )
+        `;
+        const texto = `%${filters.texto.toLowerCase()}%`;
+        params.push(texto, texto, texto);
+    }
+
+    if (filters.desde) {
+        sql += ` AND r.fecha_generacion >= ?`;
+        params.push(filters.desde);
+    }
+
+    if (filters.hasta) {
+        sql += ` AND r.fecha_generacion <= ?`;
+        params.push(filters.hasta);
+    }
+
+    sql += ` ORDER BY r.fecha_generacion DESC`;
+
+    const [rows] = await db.query(sql, params);
 
     return rows.map(r => ({
         id_reporte: r.id_reporte,
@@ -91,83 +132,7 @@ const getReportes = async () => {
         url_documento: r.url_documento,
         fecha_generacion: r.fecha_generacion,
         usuario: {
-            id: r.id_usuario,
-            correo: r.usuario_correo
-        }
-    }));
-};
-
-
-const createReporte = async (reporte) => {
-
-    const { id_usuario, tipo_reporte, descripcion, url_documento } = reporte;
-
-    const [result] = await db.query(`
-        INSERT INTO reporte 
-        (id_usuario, tipo_reporte, descripcion, url_documento)
-        VALUES (?, ?, ?, ?)
-    `, [
-        id_usuario,
-        tipo_reporte,
-        descripcion,
-        url_documento
-    ]);
-
-    return {
-        id_reporte: result.insertId,
-        id_usuario,
-        tipo_reporte,
-        descripcion,
-        url_documento,
-        fecha_generacion: new Date()
-    };
-};
-
-
-module.exports = {
-    getPostulaciones,
-    deletePostulaciones,
-    getReportes,
-    createReporte
-};
-
-const deletePostulaciones = async (ids) => {
-
-    if (!Array.isArray(ids) || ids.length === 0) return;
-
-    const placeholders = ids.map(() => '?').join(',');
-
-    await db.query(`
-        DELETE FROM postulacion
-        WHERE id_postulacion IN (${placeholders})
-    `, ids);
-};
-
-
-const getReportes = async () => {
-
-    const [rows] = await db.query(`
-        SELECT 
-            r.id_reporte,
-            r.tipo_reporte,
-            r.descripcion,
-            r.url_documento,
-            r.fecha_generacion,
-            u.id_usuario,
-            u.correo AS usuario_correo
-        FROM reporte r
-        JOIN usuario u ON r.id_usuario = u.id_usuario
-        ORDER BY r.fecha_generacion DESC
-    `);
-
-    return rows.map(r => ({
-        id_reporte: r.id_reporte,
-        tipo_reporte: r.tipo_reporte,
-        descripcion: r.descripcion,
-        url_documento: r.url_documento,
-        fecha_generacion: r.fecha_generacion,
-        usuario: {
-            id: r.id_usuario,
+            id_usuario: r.id_usuario,
             correo: r.usuario_correo
         }
     }));

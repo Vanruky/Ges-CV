@@ -64,7 +64,7 @@
 
 .actions {
     width: 100%;
-    max-width: 1000px;
+    max-width: 1400px;
     display: flex;
     justify-content: flex-end;
     gap: 15px;
@@ -137,13 +137,13 @@
     transform: translateY(-2px);
 }
 
-.btn.disabled {
+.btn:disabled {
     opacity: 0.4;
     cursor: not-allowed;
     pointer-events: auto; 
 }
 
-.btn.disabled:hover {
+.btn:disabled:hover {
     background: rgba(28, 35, 49, 0.51);
 }
 

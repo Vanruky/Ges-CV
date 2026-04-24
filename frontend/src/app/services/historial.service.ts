@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 export interface HistorialPostulacion {
     id_postulacion: number;
@@ -7,7 +7,6 @@ export interface HistorialPostulacion {
     postulante: string;
     cargo: string;
     estado: string;
-    resultado?: string;
 }
 
 @Injectable({

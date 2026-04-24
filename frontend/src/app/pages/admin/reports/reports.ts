@@ -5,13 +5,9 @@ import { FormsModule } from '@angular/forms';
 import { ReportsService, Reporte } from '@services/reports.service';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import * as XLSX from 'xlsx';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
 
 type ReporteUI = Reporte & {
   tipo_formateado: string;
-  clase_tipo: string;
 };
 
 @Component({
@@ -24,7 +20,6 @@ type ReporteUI = Reporte & {
 export class ReportsComponent implements OnInit {
 
   reportes: ReporteUI[] = [];
-  reportesOriginal: ReporteUI[] = [];
 
   filtroTexto = '';
   desde = '';
@@ -37,8 +32,7 @@ export class ReportsComponent implements OnInit {
 
   nuevoReporte: Partial<Reporte> = {
     tipo_reporte: '',
-    descripcion: '',
-    url_documento: ''
+    descripcion: ''
   };
 
   archivoSeleccionado: File | null = null;
@@ -58,14 +52,13 @@ export class ReportsComponent implements OnInit {
     this.cargarReportes();
 
     this.filtroSubject
-      .pipe(debounceTime(300))
-      .subscribe(() => this.filtrar());
+      .pipe(debounceTime(400))
+      .subscribe(() => this.cargarReportes());
   }
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: Event) {
     const target = event.target as HTMLElement;
-
     if (!target.closest('.export-dropdown')) {
       this.showExportMenu = false;
     }
@@ -74,17 +67,17 @@ export class ReportsComponent implements OnInit {
   cargarReportes() {
     this.loading = true;
 
-    this.reportsService.getReportes().subscribe({
+    this.reportsService.getReportes({
+      texto: this.filtroTexto || undefined,
+      desde: this.desde || undefined,
+      hasta: this.hasta || undefined
+    }).subscribe({
       next: (data) => {
-
-        const transformados: ReporteUI[] = data.map(r => ({
+        this.reportes = data.map(r => ({
           ...r,
-          tipo_formateado: this.formatearTipo(r.tipo_reporte),
-          clase_tipo: this.getClaseTipo(r.tipo_reporte)
+          tipo_formateado: this.formatearTipo(r.tipo_reporte)
         }));
 
-        this.reportesOriginal = transformados;
-        this.reportes = [...transformados];
         this.loading = false;
       },
       error: () => {
@@ -99,74 +92,39 @@ export class ReportsComponent implements OnInit {
   }
 
   onFechaChange() {
-    this.filtrar();
-  }
-
-  filtrar() {
-    this.reportes = this.reportesOriginal.filter(r => {
-
-      const matchTexto =
-        !this.filtroTexto ||
-        (r.tipo_formateado ?? '')
-          .toLowerCase()
-          .includes(this.filtroTexto.toLowerCase());
-
-      const fecha = r.fecha_generacion ? new Date(r.fecha_generacion) : null;
-      const desde = this.desde ? new Date(this.desde) : null;
-      const hasta = this.hasta ? new Date(this.hasta) : null;
-
-      const matchDesde = !desde || (fecha && fecha >= desde);
-      const matchHasta = !hasta || (fecha && fecha <= hasta);
-
-      return matchTexto && matchDesde && matchHasta;
-    });
+    this.cargarReportes();
   }
 
   exportarExcel() {
-    const data = this.reportes.map(r => ({
-      Fecha: r.fecha_generacion,
-      Tipo: r.tipo_formateado,
-      Descripción: r.descripcion,
-      Usuario: r.usuario?.correo ?? 'Sin usuario',
-      Archivo: r.url_documento ?? '-'
-    }));
-
-    const worksheet = XLSX.utils.json_to_sheet(data);
-
-    const workbook: XLSX.WorkBook = {
-      Sheets: { Reportes: worksheet },
-      SheetNames: ['Reportes']
-    };
-
-    XLSX.writeFile(workbook, 'reportes.xlsx');
+    this.reportsService.exportExcel({
+      texto: this.filtroTexto || undefined,
+      desde: this.desde || undefined,
+      hasta: this.hasta || undefined
+    }).subscribe(blob => {
+      this.download(blob, 'reportes.xlsx');
+    });
   }
 
   exportarPDF() {
-    const doc = new jsPDF();
-
-    const columns = ['Fecha', 'Tipo', 'Descripción', 'Usuario', 'Archivo'];
-
-    const rows = this.reportes.map(r => [
-      new Date(r.fecha_generacion).toLocaleString(),
-      r.tipo_formateado,
-      r.descripcion,
-      r.usuario?.correo ?? 'Sin usuario',
-      r.url_documento ?? '-'
-    ]);
-
-    doc.text('Listado de Reportes', 14, 15);
-
-    autoTable(doc, {
-      startY: 20,
-      head: [columns],
-      body: rows,
+    this.reportsService.exportPDF({
+      texto: this.filtroTexto || undefined,
+      desde: this.desde || undefined,
+      hasta: this.hasta || undefined
+    }).subscribe(blob => {
+      this.download(blob, 'reportes.pdf');
     });
+  }
 
-    doc.save('reportes.pdf');
+  private download(blob: Blob, name: string) {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    a.click();
+    window.URL.revokeObjectURL(url);
   }
 
   generarReporte() {
-
     if (!this.nuevoReporte.tipo_reporte) {
       this.mostrarToast('Debes seleccionar un tipo de reporte', 'warning');
       return;
@@ -175,7 +133,6 @@ export class ReportsComponent implements OnInit {
     this.loading = true;
 
     const formData = new FormData();
-
     const userId = Number(localStorage.getItem('user_id'));
 
     formData.append('id_usuario', String(userId));
@@ -234,36 +191,30 @@ export class ReportsComponent implements OnInit {
 
   cerrarModal() {
     this.showModal = false;
-
-    this.nuevoReporte = {
-      tipo_reporte: '',
-      descripcion: '',
-      url_documento: ''
-    };
-
+    this.nuevoReporte = { tipo_reporte: '', descripcion: '' };
     this.archivoSeleccionado = null;
     this.archivoNombre = '';
   }
 
   mostrarToast(mensaje: string, tipo: 'success' | 'error' | 'warning') {
     this.toast = { visible: true, mensaje, tipo };
-
-    setTimeout(() => {
-      this.toast.visible = false;
-    }, 3000);
+    setTimeout(() => this.toast.visible = false, 3000);
   }
 
 
   private formatearTipo(tipo: string): string {
-    return tipo?.replaceAll('_', ' ') ?? '';
+    if (!tipo) return '';
+
+    let texto = tipo
+      .replaceAll('_', ' ')
+      .toLowerCase()
+      .replace(/\b\w/g, l => l.toUpperCase());
+
+    texto = texto
+      .replace('Rotacion', 'Rotación')
+      .replace('Evaluaciones', 'Evaluaciones');
+
+    return texto;
   }
 
-  private getClaseTipo(tipo: string): string {
-    switch (tipo) {
-      case 'ALTA_ROTACION': return 'badge-warning';
-      case 'BAJA_POSTULACION': return 'badge-danger';
-      case 'DISPONIBILIDAD_POR_CARGO': return 'badge-success';
-      default: return 'badge-default';
-    }
-  }
 }

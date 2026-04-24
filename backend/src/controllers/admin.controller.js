@@ -12,7 +12,7 @@ const getDashboard = async (req, res) => {
     }
 };
 
-
+// POSTULACIONES (HISTORIAL)
 const getHistorial = async (req, res) => {
     try {
         const data = await adminService.getPostulaciones(req.query);
@@ -31,12 +31,20 @@ const deletePostulaciones = async (req, res) => {
             return res.status(400).json({ message: 'No hay IDs para eliminar' });
         }
 
+        const MAX_DELETE = 50;
+
+        if (ids.length > MAX_DELETE) {
+            return res.status(400).json({
+                message: `Solo puedes eliminar hasta ${MAX_DELETE} registros`
+            });
+        }
+
         await adminService.deletePostulaciones(ids);
 
         res.json({ message: 'Eliminadas correctamente' });
 
     } catch (error) {
-        res.status(500).json({ message: 'Error eliminando postulaciones', error });
+        res.status(500).json({ message: 'Error eliminando postulaciones' });
     }
 };
 
@@ -49,21 +57,15 @@ const exportExcelHistorial = async (req, res) => {
         const sheet = workbook.addWorksheet('Historial');
 
         sheet.columns = [
-            { header: 'ID', key: 'id', width: 10 },
+            { header: 'ID', key: 'id_postulacion', width: 10 },
             { header: 'Fecha', key: 'fecha', width: 20 },
             { header: 'Estado', key: 'estado', width: 20 },
             { header: 'Cargo', key: 'cargo', width: 25 },
-            { header: 'Candidato', key: 'candidato', width: 35 }
+            { header: 'Postulante', key: 'postulante', width: 35 }
         ];
 
         data.forEach(r => {
-            sheet.addRow({
-                id: r.id_postulacion,
-                fecha: r.fecha_postulacion,
-                estado: r.estado,
-                cargo: r.cargo,
-                candidato: r.candidato
-            });
+            sheet.addRow(r);
         });
 
         res.setHeader(
@@ -80,7 +82,7 @@ const exportExcelHistorial = async (req, res) => {
         res.end();
 
     } catch (error) {
-        res.status(500).json({ message: 'Error export Excel historial', error });
+        res.status(500).json({ message: 'Error export Excel historial' });
     }
 };
 
@@ -105,8 +107,8 @@ const exportPDFHistorial = async (req, res) => {
         data.forEach(p => {
             doc
                 .fontSize(10)
-                .text(`Fecha: ${p.fecha_postulacion}`)
-                .text(`Postulante: ${p.candidato}`)
+                .text(`Fecha: ${p.fecha}`)
+                .text(`Postulante: ${p.postulante}`)
                 .text(`Cargo: ${p.cargo}`)
                 .text(`Estado: ${p.estado}`)
                 .moveDown();
@@ -115,17 +117,18 @@ const exportPDFHistorial = async (req, res) => {
         doc.end();
 
     } catch (error) {
-        res.status(500).json({ message: 'Error export PDF historial', error });
+        res.status(500).json({ message: 'Error export PDF historial' });
     }
 };
 
 
+// REPORTES
 const getReportes = async (req, res) => {
     try {
-        const data = await adminService.getReportes();
+        const data = await adminService.getReportes(req.query);
         res.json(data);
     } catch (error) {
-        res.status(500).json({ message: 'Error reportes', error });
+        res.status(500).json({ message: 'Error reportes' });
     }
 };
 
@@ -155,26 +158,26 @@ const createReporte = async (req, res) => {
 
 const exportExcelReportes = async (req, res) => {
     try {
-        const data = await adminService.getReportes();
+        const data = await adminService.getReportes(req.query);
 
         const workbook = new ExcelJS.Workbook();
         const sheet = workbook.addWorksheet('Reportes');
 
         sheet.columns = [
-            { header: 'Fecha', key: 'fecha', width: 25 },
-            { header: 'Tipo', key: 'tipo', width: 25 },
-            { header: 'Descripción', key: 'desc', width: 40 },
-            { header: 'Usuario', key: 'user', width: 25 },
-            { header: 'Archivo', key: 'file', width: 40 }
+            { header: 'Fecha', key: 'fecha_generacion', width: 25 },
+            { header: 'Tipo', key: 'tipo_reporte', width: 25 },
+            { header: 'Descripción', key: 'descripcion', width: 40 },
+            { header: 'Usuario', key: 'usuario', width: 25 },
+            { header: 'Archivo', key: 'url_documento', width: 40 }
         ];
 
         data.forEach(r => {
             sheet.addRow({
-                fecha: r.fecha_generacion,
-                tipo: r.tipo_reporte,
-                desc: r.descripcion,
-                user: r.usuario_correo,
-                file: r.url_documento
+                fecha_generacion: r.fecha_generacion,
+                tipo_reporte: r.tipo_reporte,
+                descripcion: r.descripcion,
+                usuario: r.usuario.correo,
+                url_documento: r.url_documento
             });
         });
 
@@ -192,14 +195,14 @@ const exportExcelReportes = async (req, res) => {
         res.end();
 
     } catch (error) {
-        res.status(500).json({ message: 'Error Excel reportes', error });
+        res.status(500).json({ message: 'Error Excel reportes' });
     }
 };
 
 
 const exportPDFReportes = async (req, res) => {
     try {
-        const data = await adminService.getReportes();
+        const data = await adminService.getReportes(req.query);
 
         const doc = new PDFDocument();
 
@@ -220,14 +223,14 @@ const exportPDFReportes = async (req, res) => {
                 .text(`Tipo: ${r.tipo_reporte}`)
                 .text(`Fecha: ${r.fecha_generacion}`)
                 .text(`Descripción: ${r.descripcion}`)
-                .text(`Usuario: ${r.usuario_correo}`)
+                .text(`Usuario: ${r.usuario.correo}`)
                 .moveDown();
         });
 
         doc.end();
 
     } catch (error) {
-        res.status(500).json({ message: 'Error PDF reportes', error });
+        res.status(500).json({ message: 'Error PDF reportes' });
     }
 };
 

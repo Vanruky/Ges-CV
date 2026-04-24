@@ -3,36 +3,42 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Reporte {
-    id_reporte?: number;
-    tipo_reporte: string;
-    descripcion: string;
-    fecha_generacion: string;
-    url_documento?: string;
-    usuario?: { id_usuario: number; correo: string; };
+  id_reporte?: number;
+  tipo_reporte: string;
+  descripcion: string;
+  fecha_generacion: string;
+  url_documento?: string;
+  usuario?: { id_usuario: number; correo: string };
 }
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class ReportsService {
 
-    private API = 'http://localhost:3000/api/admin';
+  private API = 'http://localhost:3000/api/admin';
 
-    constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-    getReportes(): Observable<Reporte[]> {
-        return this.http.get<Reporte[]>(`${this.API}/reportes`);
-    }
+  getReportes(params?: any): Observable<Reporte[]> {
+    return this.http.get<Reporte[]>(`${this.API}/reportes`, { params });
+  }
 
-    getReporteById(id: number): Observable<Reporte> {
-        return this.http.get<Reporte>(`${this.API}/reportes/${id}`);
-    }
+  createReporte(formData: FormData): Observable<any> {
+    return this.http.post(`${this.API}/reportes`, formData);
+  }
 
-    createReporte(formData: FormData): Observable<any> {
-        return this.http.post(`${this.API}/reportes`, formData);
-    }
+  exportExcel(params?: any) {
+    return this.http.get(`${this.API}/reportes/export/excel`, {
+      params,
+      responseType: 'blob'
+    });
+  }
 
-    deleteReporte(id: number): Observable<void> {
-        return this.http.delete<void>(`${this.API}/reportes/${id}`);
-    }
+  exportPDF(params?: any) {
+    return this.http.get(`${this.API}/reportes/export/pdf`, {
+      params,
+      responseType: 'blob'
+    });
+  }
 }

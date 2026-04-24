@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/admin.controller');
-const admin = require('../middlewares/admin.middleware');
 const multer = require('multer');
 const path = require('path');
+
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -16,16 +16,23 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
+
     const allowedTypes = [
         'application/pdf',
         'image/png',
-        'image/jpeg'
+        'image/jpeg',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/vnd.ms-excel'
     ];
 
-    if (allowedTypes.includes(file.mimetype)) {
+    const allowedExt = ['.pdf', '.png', '.jpg', '.jpeg', '.xlsx', '.xls'];
+
+    const ext = path.extname(file.originalname).toLowerCase();
+
+    if (allowedTypes.includes(file.mimetype) || allowedExt.includes(ext)) {
         cb(null, true);
     } else {
-        cb(new Error('Solo PDF o imágenes'), false);
+        cb(new Error('Solo PDF, imágenes o Excel'), false);
     }
 };
 
@@ -37,9 +44,11 @@ const upload = multer({
     }
 });
 
+
+// RUTAS
 router.get('/home', adminController.getDashboard);
 
-// POSTULACIONES (HISTORIAL)
+// HISTORIAL
 router.get('/historial', adminController.getHistorial);
 router.get('/historial/export/excel', adminController.exportExcelHistorial);
 router.get('/historial/export/pdf', adminController.exportPDFHistorial);

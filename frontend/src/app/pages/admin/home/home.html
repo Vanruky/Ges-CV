@@ -2,92 +2,87 @@
 
 <div class="filters">
 
-  <input type="text"
-    placeholder="Buscar..."
-    [(ngModel)]="filtroTexto"
-    (ngModelChange)="onFiltroChange()" />
+    <div class="search-box">
+        <input type="text" placeholder="Buscar..." [(ngModel)]="filtroTexto" (ngModelChange)="onFiltroChange()" />
+    </div>
 
-  <div class="date-filters">
-    <input type="date" [(ngModel)]="desde" (change)="onFechaChange()" />
-    <input type="date" [(ngModel)]="hasta" (change)="onFechaChange()" />
-  </div>
+    <div class="date-filters">
 
-</div>
+        <div class="date-field">
+            <label>Desde</label>
+            <input type="date" [(ngModel)]="desde" (change)="onFechaChange()" />
+        </div>
 
-<!-- SELECT ALL -->
-<div class="select-all">
-  <label>
-    <input type="checkbox"
-      [(ngModel)]="selectAllChecked"
-      (change)="toggleSelectAll()"
-      [disabled]="!postulantes.length" />
-
-    Seleccionar todos ({{ cantidadFiltrados }})
-  </label>
-</div>
-
-<div *ngIf="loading">Cargando...</div>
-
-<!-- TABLE -->
-<app-table
-  [data]="postulantes"
-  tipo="historial"
-  [selectedIds]="selectedIds"
-  (toggleSelection)="toggleSelection($event)">
-</app-table>
-
-<!-- ACTIONS -->
-<div class="actions">
-
-  <span>{{ cantidadSeleccionados }} seleccionados</span>
-
-  <div class="export-dropdown">
-
-    <button class="btn export"
-      (click)="toggleExportMenu()"
-      [disabled]="!postulantes.length">
-
-      Exportar ▼ ({{ cantidadSeleccionados }})
-    </button>
-
-    <div *ngIf="showExportMenu" class="dropdown-menu">
-
-      <button (click)="setExportMode('selected')"
-        [disabled]="!cantidadSeleccionados">
-        Exportar seleccionados
-      </button>
-
-      <button (click)="setExportMode('filtered')"
-        [disabled]="!postulantes.length">
-        Exportar filtrados
-      </button>
+        <div class="date-field">
+            <label>Hasta</label>
+            <input type="date" [(ngModel)]="hasta" (change)="onFechaChange()" />
+        </div>
 
     </div>
-  </div>
-
-  <button class="btn danger"
-    (click)="depurar()"
-    [disabled]="!cantidadSeleccionados">
-
-    Eliminar
-  </button>
 
 </div>
 
-<!-- TOAST -->
+
+<div class="selection-info">
+    <label>
+        <input type="checkbox" [(ngModel)]="selectAllChecked" (change)="toggleSelectAll()"
+            [disabled]="!postulantes.length" />
+
+        Seleccionar todos ({{ cantidadFiltrados }})
+    </label>
+</div>
+
+
+<app-table [data]="postulantes" tipo="historial" [selectedIds]="selectedIds"
+    (toggleSelection)="toggleSelection($event)">
+</app-table>
+
+
+<div class="actions">
+
+    <span class="selection-info">{{ cantidadSeleccionados }} seleccionados</span>
+
+    <div class="export-dropdown">
+
+        <button class="btn export" (click)="toggleExportMenu()" [disabled]="!postulantes.length">
+
+            Exportar ▼ ({{ cantidadSeleccionados }})
+        </button>
+
+        <div *ngIf="showExportMenu" class="dropdown-menu">
+
+            <button (click)="setExportMode('selected')" [disabled]="!cantidadSeleccionados">
+                Exportar seleccionados ({{ cantidadSeleccionados }})
+            </button>
+
+            <button (click)="setExportMode('filtered')" [disabled]="!postulantes.length">
+                Exportar resultados ({{ cantidadFiltrados }})
+            </button>
+
+        </div>
+    </div>
+
+    <button class="btn depurar" (click)="depurar()" [disabled]="!cantidadSeleccionados">
+
+        Depurar
+    </button>
+
+</div>
+
+
 <div *ngIf="toastVisible" class="toast" [ngClass]="toastType">
-  {{ toastMessage }}
+    {{ toastMessage }}
 </div>
 
-<!-- MODAL -->
+
 <div class="modal-overlay" *ngIf="showModal">
-  <div class="modal">
+    <div class="modal">
 
-    <h3>Confirmación</h3>
-    <p>{{ modalMessage }}</p>
+        <h3>Confirmación</h3>
+        <p>{{ modalMessage }}</p>
 
-    <button (click)="cancelarEliminar()">Cancelar</button>
-    <button (click)="confirmarEliminar()">Eliminar</button>
+        <button (click)="cancelarEliminar()">Cancelar</button>
+        <button (click)="confirmarEliminar()">Eliminar</button>
 
-  </div>
+    </div>
 </div>

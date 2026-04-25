@@ -2,7 +2,6 @@ const { Candidato } = require('../models');
 
 exports.obtenerPerfil = async (req, res) => {
     try {
-        // IMPORTANTE: Verifica si tu middleware de auth guarda el id en req.usuario o req.user
         const id_usuario = req.usuario.id; 
         
         const candidato = await Candidato.obtenerPerfil(id_usuario);
@@ -11,7 +10,7 @@ exports.obtenerPerfil = async (req, res) => {
             return res.status(404).json({ mensaje: "Candidato no encontrado" });
         }
 
-        // Enviamos los datos tal cual vienen del modelo (nombres de la BD)
+        // se envia la info
         res.json(candidato);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -23,8 +22,7 @@ exports.actualizarPerfil = async (req, res) => {
         const id_usuario = req.usuario.id;
         const datosNuevos = req.body; 
 
-        // No necesitas validar el bloqueo aquí porque tu MODELO ya lo hace con el SQL.
-        // Solo llamamos a la función del modelo.
+        // el bloqueo de no cambiar la info mas de 1  vez esta en el modelo no en aca en el controlador porsiaca
         const resultado = await Candidato.actualizarPerfil(id_usuario, datosNuevos);
 
         if (!resultado) {

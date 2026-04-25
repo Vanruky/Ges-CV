@@ -1,6 +1,75 @@
+const Postulacion = require('../models/postulacionModel');
+const Curriculum = require('../models/cvModel');
+const obtenerDatosCandidato = require('../utils/obtenerRutYId');
+
+//nueva postulación
+exports.crearPostulacion = async (req, res) => {
+    try {
+        //id_candidato desde el token
+        const { id_candidato } = await obtenerDatosCandidato(req);
+        const { id_cargo, id_estamento } = req.body;
+
+        // Validar 
+        if (!id_cargo || !id_estamento) {
+            return res.status(400).json({ mensaje: "Cargo y Estamento son obligatorios" });
+        }
+
+        //Verificar duplicados 
+        const existe = await Postulacion.verificarDuplicado(id_candidato, id_cargo);
+        
+        if (existe) {
+            return res.status(400).json({ 
+                mensaje: 'Ya posees una postulación activa para este cargo.' 
+            });
+        }
+
+        // Crear nueva postulacion
+        const id_nueva_postulacion = await Postulacion.crearPostulacion(id_candidato, { 
+            id_cargo, 
+            id_estamento 
+        });
+
+        // si se sube documentacion se registra 
+        if (req.file) {
+            await Curriculum.subir(
+                id_candidato,
+                req.file.originalname, 
+                req.file.filename    
+            );
+        }
+
+        res.status(201).json({
+            ok: true,
+            mensaje: "Postulación realizada con éxito",
+            id_postulacion: id_nueva_postulacion
+        });
+
+    } catch (error) {
+        console.error("Error al postular:", error);
+        res.status(500).json({ error: "Error interno al procesar la postulación" });
+    }
+};
+
+// Historial de las postulaciones
+exports.getMisPostulaciones = async (req, res) => {
+    try {
+        const { id_candidato } = await obtenerDatosCandidato(req);
+        
+        // funcion que trae los nombres de cargos y estados
+        const data = await Postulacion.obtenerPorCandidato(id_candidato);
+
+        res.json(data);
+    } catch (error) {
+        console.error("Error al obtener historial:", error);
+        res.status(500).json({ error: "Error al obtener tus postulaciones" });
+    }
+};
+
+
+
+/* logica con sequelize
 const { Postulacion, Candidato } = require('../models');
 const obtenerDatosCandidato = require('../utils/obtenerRutYId');
-const { Op } = require('sequelize');
 
 const USE_MOCK = true;
 let postulacionesMock = [

@@ -3,7 +3,7 @@ const db =require('../config/db')
 const Postulacion = {
 
     // crear una nueva postulación
-    crear: async (id_candidato, datos) => {
+    crearPostulacion: async (id_candidato, datos) => {
         const sql = `
             INSERT INTO postulacion 
             (id_candidato, id_cargo, id_estamento)
@@ -45,7 +45,10 @@ const Postulacion = {
     verificarDuplicado: async (id_candidato, id_cargo) => {
     const sql = `SELECT id_postulacion FROM postulacion WHERE id_candidato = ? AND id_cargo = ?`;
     const [rows] = await db.query(sql, [id_candidato, id_cargo]);
-    return rows.length > 0; 
+    return rows.length > 0; /*Devuelve true si encuentra 
+    coincidencias entre la busqueda del id candidato con el cargo (osea duplicados),
+    recordar esto para el codigo del controlador
+    */
 },
 };
 

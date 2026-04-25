@@ -1,5 +1,5 @@
 // test_postulacion.js
-const Postulacion = require('./src/models/postulacionModels');
+const Postulacion = require('./src/models/postulacionModel');
 
 async function probarNuevaPostulacion() {
     try {

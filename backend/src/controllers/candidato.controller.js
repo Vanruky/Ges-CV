@@ -1,67 +1,43 @@
-const Candidato = require('../models/candidatoModel');
+const { Candidato } = require('../models');
 
-exports.getPerfil = async (req, res) => {
+exports.obtenerPerfil = async (req, res) => {
     try {
+        // IMPORTANTE: Verifica si tu middleware de auth guarda el id en req.usuario o req.user
         const id_usuario = req.usuario.id; 
         
-        // funcion obtener perfil del modelo
         const candidato = await Candidato.obtenerPerfil(id_usuario);
 
         if (!candidato) {
             return res.status(404).json({ mensaje: "Candidato no encontrado" });
         }
 
-        // alias
-        res.json({
-            ...candidato,
-            nombre_completo: `${candidato.usuario_nombre} ${candidato.apellido_p} ${candidato.apellido_m}`
-        });
+        // Enviamos los datos tal cual vienen del modelo (nombres de la BD)
+        res.json(candidato);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-exports.updatePerfil = async (req, res) => {
+exports.actualizarPerfil = async (req, res) => {
     try {
         const id_usuario = req.usuario.id;
-        const nuevosDatos = req.body; // El front debe mandar num_doc, usuario_nombre, etc.
+        const datosNuevos = req.body; 
 
-        const candidatoActual = await Candidato.obtenerPerfil(id_usuario);
+        // No necesitas validar el bloqueo aquí porque tu MODELO ya lo hace con el SQL.
+        // Solo llamamos a la función del modelo.
+        const resultado = await Candidato.actualizarPerfil(id_usuario, datosNuevos);
 
-        if (!candidatoActual) {
-            return res.status(404).json({ mensaje: "Candidato no encontrado" });
-        }
-
-        // 2. Lógica de bloqueo usando los alias: num_doc, usuario_nombre, etc.
-        const intentaCambiarIdentidad = 
-            nuevosDatos.num_doc !== candidatoActual.num_doc ||
-            nuevosDatos.usuario_nombre !== candidatoActual.usuario_nombre ||
-            nuevosDatos.apellido_p !== candidatoActual.apellido_p ||
-            nuevosDatos.apellido_m !== candidatoActual.apellido_m;
-
-        // Usamos tu alias rut_edit
-        if (intentaCambiarIdentidad && candidatoActual.rut_edit === 1) {
+        if (!resultado) {
             return res.status(400).json({ 
-                mensaje: "Identidad bloqueada: Ya realizaste tu única edición permitida." 
+                mensaje: "No se pudo actualizar. Es posible que el usuario no exista o ya no pueda editar ciertos campos." 
             });
         }
 
-        // 3. Preparamos el objeto con tus nombres de campo
-        const datosParaActualizar = {
-            ...nuevosDatos,
-            rut_edit: intentaCambiarIdentidad ? 1 : candidatoActual.rut_edit
-        };
-
-        // las funciones de models
-        await Candidato.actualizarPerfil(id_usuario, datosParaActualizar);
-
-        res.json({ mensaje: "Perfil actualizado con éxito en el sistema del hospital" });
+        res.json({ mensaje: "Perfil actualizado con éxito" });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
-
-
 
 /*const { Candidato } = require('../models');
 const USE_MOCK = true; 

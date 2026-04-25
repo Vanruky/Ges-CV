@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controllers/usuario.controller');
 const auth = require('../middlewares/auth.middleware');
+const usuarioController = require('../controllers/usuario.controller');
 
-router.post('/register', controller.register);
-router.post('/login', controller.login);
+
+router.post('/register', usuarioController.register);
+router.post('/login', usuarioController.login);
 
 // ruta protegida
 router.get('/perfil', auth, (req, res) => {

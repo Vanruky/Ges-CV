@@ -4,12 +4,9 @@ const authMiddleware = (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
 
-        // verificar si viene el token
         if (!authHeader) {
             return res.status(401).json({ mensaje: 'Token requerido' });
         }
-
-        // "Bearer TOKEN"
         const token = authHeader.split(' ')[1];
 
         // verificar token

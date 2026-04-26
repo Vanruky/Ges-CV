@@ -2,19 +2,16 @@ const db = require('../config/db');
 
 async function obtenerDatosCandidato(req) {
     try {
-        // esto revisa el ID del usuario desde el token 
-        const id_usuario = req.usuario.id;
+        const id_usuario = req.usuario.id; 
 
-        // buscar perfil 
         const sql = `
-            SELECT c.id_candidato, c.numero_identificacion as rut
-            FROM usuario u
-            JOIN candidato c ON u.id_usuario = c.id_usuario
-            WHERE u.id_usuario = ?
+            SELECT id_candidato, numero_identificacion AS rut
+            FROM candidato
+            WHERE id_usuario = ?
         `;
-        //el traductor de la base de datos
+
         const [rows] = await db.query(sql, [id_usuario]);
-        //buscar filas y ver si aparece info (en este caso si hay algo es mas que 0)
+
         if (rows.length > 0) {
             return {
                 id_candidato: rows[0].id_candidato,
@@ -22,16 +19,17 @@ async function obtenerDatosCandidato(req) {
             };
         }
 
-        // Si no encuentra nada lanza el error (puede ser un admin pero el admin no tiene porque postular)
+        // en el caso del admin no hay fila en candidato
         throw new Error('No se encontró el perfil de candidato para este usuario');
 
     } catch (error) {
-        console.error("Error en obtenerDatosCandidato:", error);
-        return { id_candidato: null, rut: null };
+        console.error("Error en obtenerDatosCandidato:", error.message);
+        return null; 
     }
 }
 
 module.exports = obtenerDatosCandidato;
+
 
 
 

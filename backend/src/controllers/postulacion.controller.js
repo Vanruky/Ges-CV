@@ -1,15 +1,21 @@
-const Postulacion = require('../models/postulacionModel');
-const Curriculum = require('../models/cvModel');
-const obtenerDatosCandidato = require('../utils/obtenerRutYId');
+const { Postulacion , Curriculum} = require('../models'); 
+const obtenerDatosCandidato = require('../utils/obtenerDatosCandidato');
+const fs = require('fs');
+const path = require('path'); 
+
 
 //nueva postulación
 exports.crearPostulacion = async (req, res) => {
     try {
         //id_candidato desde el token
-        const { id_candidato } = await obtenerDatosCandidato(req);
-        const { id_cargo, id_estamento } = req.body;
+        const datos = await obtenerDatosCandidato(req);
 
-        // Validar 
+        if (!datos || !datos.id_candidato) {
+        return res.status(403).json({ mensaje: "Perfil de candidato no encontrado" });
+        }
+        const id_candidato = datos.id_candidato;
+        const { id_cargo, id_estamento } = req.body;
+        //los campos obligatorios
         if (!id_cargo || !id_estamento) {
             return res.status(400).json({ mensaje: "Cargo y Estamento son obligatorios" });
         }

@@ -3,16 +3,15 @@ const { Candidato } = require('../models');
 exports.obtenerPerfil = async (req, res) => {
     try {
         const id_usuario = req.usuario.id; 
-        
         const candidato = await Candidato.obtenerPerfil(id_usuario);
 
         if (!candidato) {
             return res.status(404).json({ mensaje: "Candidato no encontrado" });
         }
 
-        // se envia la info
         res.json(candidato);
     } catch (error) {
+        console.error("Error al obtener perfil:", error);
         res.status(500).json({ error: error.message });
     }
 };
@@ -36,6 +35,9 @@ exports.actualizarPerfil = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+
+
 
 /*const { Candidato } = require('../models');
 const USE_MOCK = true; 

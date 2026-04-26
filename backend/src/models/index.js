@@ -3,7 +3,10 @@ y solo usar una sola que interactue con los modelos*/
 
 
 module.exports = {
-    Candidato: require('./usuarioModel'),
+    Usuario: require('./usuarioModel'),
     Cargo: require('./cargoModel'),
-    Postulacion: require('./postulacionModel')
+    Postulacion: require('./postulacionModel'),
+    Candidato: require('./candidatoModel'),
+    Curriculum: require('./cvModel')
+
 };

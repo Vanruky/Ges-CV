@@ -1,3 +1,5 @@
+
+
 const USE_MOCK = true;
 const candidatoMock = { nombre: "Miren", apellido_paterno: "Romero", apellido_materno: "Test" };
 const postulacionesMock = [
@@ -25,6 +27,8 @@ exports.getDashboard = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+
 /*  < dejo el prospecto de código limpio asumiendo que SQL esta conectado, toca verificar si hay cambios despues
 const { Candidato, Postulacion } = require('../models');
 

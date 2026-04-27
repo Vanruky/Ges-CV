@@ -7,6 +7,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Probando conexión
+app.get('/api/test', (req, res) => {
+    res.json({ message: 'Backend funcionando' });
+});
+
 // Importación de Rutas
 const usuarioRoutes = require('./routes/usuario.routes');
 const candidatoRoutes = require('./routes/candidato.routes');

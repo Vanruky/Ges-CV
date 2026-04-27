@@ -203,7 +203,9 @@
 }
 
 .modal {
-    background: #ffffff;
+    background: rgba(28, 35, 49, 0.95);
+    border: 2px solid #7904ff;
+    border-radius: 16px;
     padding: 28px;
     border-radius: 14px;
     width: 380px;
@@ -215,19 +217,19 @@
 .modal h3 {
     margin-bottom: 10px;
     font-size: 18px;
-    color: #2c2c2c;
+    color: #ffffff;
 }
 
 .modal p {
     font-size: 14px;
-    color: #666;
+    color: #b1b1b1;
 }
 
 .modal-buttons {
     display: flex;
     justify-content: space-between;
     margin-top: 22px;
-    gap: 12px;
+    gap: 10px;
 }
 
 .modal button {
@@ -237,25 +239,28 @@
     border: none;
     cursor: pointer;
     font-weight: 500;
+    margin-left: 10px;
     transition: all 0.2s ease;
 }
 
-.cancel {
-    background: #f3f4f6;
-    color: #4b5563;
+.cancelarEliminar {
+    border: 1px solid #7904ff;
+    background: rgba(255,255,255,0.1);
+    color: #ffffff;
 }
 
-.cancel:hover {
-    background: #e5e7eb;
+.cancelarEliminar:hover {
+    background: rgba(255,255,255,0.2);
 }
 
-.delete {
-    background: #5a01bf;
-    color: white;
+.confirmarEliminar {
+    border: 1px solid #ffffff;
+    background: #7904ff;
+    color: #ffffff;
 }
 
-.delete:hover {
-    background: #7c09ff;
+.confirmarEliminar:hover {
+    background: #7904ff7a;
 }
 
 @keyframes pop {
@@ -267,4 +272,17 @@
         transform: scale(1);
         opacity: 1;
     }
+}
+
+:host ::ng-deep input[type="checkbox"] {
+    accent-color: #00d4c6;
+}
+
+.submenu button:hover {
+    background: rgba(138, 92, 246, 0.795)
+}
+
+.submenu button.active {
+    border-bottom: 2px solid #8b5cf6;
+    background: rgba(138, 92, 246, 0.401)
 }

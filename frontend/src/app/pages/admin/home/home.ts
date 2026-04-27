@@ -30,6 +30,8 @@ export class AdminHomeComponent implements OnInit {
   modalMessage = '';
   showExportMenu = false;
 
+  submenu: 'selected' | 'filtered' | null = null;
+
   toastVisible = false;
   toastMessage = '';
   toastType: 'error' | 'success' | 'warning' | 'info' = 'info';
@@ -112,30 +114,43 @@ export class AdminHomeComponent implements OnInit {
     return this.postulantes.length;
   }
 
-  setExportMode(mode: 'selected' | 'filtered') {
-    mode === 'selected'
-      ? this.exportSeleccionados()
-      : this.exportFiltrados();
+  toggleSubmenu(menu: 'selected' | 'filtered') {
+    this.submenu = this.submenu === menu ? null : menu;
+  }
+
+  exportar(tipo: 'pdf' | 'excel', modo: 'selected' | 'filtered') {
+
+    const filtros = this.getFiltros();
+    const ids = Array.from(this.selectedIds);
+
+    if (tipo === 'pdf') {
+      if (modo === 'selected') {
+        if (!ids.length) return;
+
+        this.service.exportPDF({}, ids)
+          .subscribe(blob => this.download(blob, 'postulaciones-seleccionadas.pdf'));
+
+      } else {
+        this.service.exportPDF(filtros)
+          .subscribe(blob => this.download(blob, 'postulaciones-filtradas.pdf'));
+      }
+    }
+
+    if (tipo === 'excel') {
+      if (modo === 'selected') {
+        if (!ids.length) return;
+
+        this.service.exportExcel({}, ids)
+          .subscribe(blob => this.download(blob, 'postulaciones-seleccionadas.xlsx'));
+
+      } else {
+        this.service.exportExcel(filtros)
+          .subscribe(blob => this.download(blob, 'postulaciones-filtradas.xlsx'));
+      }
+    }
 
     this.showExportMenu = false;
-  }
-
-  exportSeleccionados() {
-    const ids = Array.from(this.selectedIds);
-    if (!ids.length) return;
-
-    this.service.exportPDF({}, ids)
-      .subscribe(blob => this.download(blob, 'postulaciones-seleccionadas.pdf'));
-  }
-
-  exportFiltrados() {
-    this.service.exportPDF(this.getFiltros())
-      .subscribe(blob => this.download(blob, 'postulaciones-filtradas.pdf'));
-  }
-
-  exportExcel() {
-    this.service.exportExcel(this.getFiltros())
-      .subscribe(blob => this.download(blob, 'postulaciones.xlsx'));
+    this.submenu = null;
   }
 
   private download(blob: Blob, name: string) {
@@ -190,7 +205,9 @@ export class AdminHomeComponent implements OnInit {
 
   toggleExportMenu() {
     if (!this.postulantes.length) return;
+
     this.showExportMenu = !this.showExportMenu;
+    this.submenu = null; 
   }
 
   @HostListener('document:click', ['$event'])
@@ -199,6 +216,7 @@ export class AdminHomeComponent implements OnInit {
 
     if (!target.closest('.export-dropdown')) {
       this.showExportMenu = false;
+      this.submenu = null; 
     }
   }
 

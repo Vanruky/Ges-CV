@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 export interface HistorialPostulacion {
     id_postulacion: number;
@@ -14,10 +15,13 @@ export interface HistorialPostulacion {
 })
 export class HistorialPostulacionService {
 
-    private API = 'http://localhost:3000/api/admin';
+    private API = `${environment.apiUrl}/api/admin`;
 
     constructor(private http: HttpClient) { }
-
+    
+    testBackend() {
+        return this.http.get(`${environment.apiUrl}/api/test`);
+    }
 
     getHistorialPostulaciones(params?: any) {
         return this.http.get<HistorialPostulacion[]>(
@@ -26,14 +30,12 @@ export class HistorialPostulacionService {
         );
     }
 
-
     deletePostulaciones(ids: number[]) {
         return this.http.post<{ message: string }>(
             `${this.API}/delete-postulaciones`,
             { ids }
         );
     }
-
 
     exportExcel(params?: any, ids?: number[]) {
         return this.http.get(
@@ -60,5 +62,4 @@ export class HistorialPostulacionService {
             }
         );
     }
-
 }

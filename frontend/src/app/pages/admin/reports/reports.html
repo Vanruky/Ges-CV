@@ -3,10 +3,7 @@
 <div class="filters">
 
     <div class="search-box">
-        <input type="text"
-               placeholder="Buscar..."
-               [(ngModel)]="filtroTexto"
-               (ngModelChange)="onFiltroChange()" />
+        <input type="text" placeholder="Buscar..." [(ngModel)]="filtroTexto" (ngModelChange)="onFiltroChange()" />
     </div>
 
     <div class="date-filters">
@@ -30,9 +27,8 @@
 <div class="actions">
     <div class="export-dropdown">
 
-        <button class="btn export"
-                (click)="toggleExportMenu(); $event.stopPropagation()"
-                [disabled]="reportes.length === 0">
+        <button class="btn export" (click)="toggleExportMenu(); $event.stopPropagation()"
+            [disabled]="reportes.length === 0">
             Exportar ▼
         </button>
 
@@ -72,17 +68,13 @@
 
         <div class="field">
             <label>Descripción</label>
-            <input type="text"
-                   [(ngModel)]="nuevoReporte.descripcion"
-                   placeholder="Opcional..." />
+            <input type="text" [(ngModel)]="nuevoReporte.descripcion" placeholder="Opcional..." />
         </div>
 
         <div class="field">
             <label>Adjuntar archivo</label>
 
-            <input type="file"
-                   (change)="onFileSelected($event)"
-                   accept=".pdf,.xlsx,.xls" />
+            <input type="file" (change)="onFileSelected($event)" accept=".pdf,.xlsx,.xls" />
 
             <small class="file-hint">Máximo 5MB • PDF o Excel</small>
 
@@ -95,9 +87,7 @@
         <div class="modal-buttons">
             <button class="cancel" (click)="cerrarModal()">Cancelar</button>
 
-            <button class="confirm"
-                    (click)="generarReporte()"
-                    [disabled]="loading">
+            <button class="confirm" (click)="generarReporte()" [disabled]="loading">
 
                 <span *ngIf="!loading">Generar</span>
                 <span *ngIf="loading" class="loader"></span>
@@ -105,9 +95,7 @@
             </button>
         </div>
 
-        <div class="toast"
-             *ngIf="toast.visible"
-             [ngClass]="toast.tipo">
+        <div class="toast" *ngIf="toast.visible" [ngClass]="toast.tipo">
             {{ toast.mensaje }}
         </div>
 

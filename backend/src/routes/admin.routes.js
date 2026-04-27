@@ -45,9 +45,6 @@ const upload = multer({
 });
 
 
-// RUTAS
-router.get('/home', adminController.getDashboard);
-
 // HISTORIAL
 router.get('/historial', adminController.getHistorial);
 router.get('/historial/export/excel', adminController.exportExcelHistorial);

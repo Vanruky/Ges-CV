@@ -42,11 +42,10 @@ const getPostulaciones = async (filters = {}) => {
 
     if (filters.desde) {
         sql += ` AND p.fecha_postulacion >= ?`;
-        params.push(filters.desde);
+        params.push(filters.desde + ' 00:00:00');
     }
-
     if (filters.hasta) {
-        sql += ` AND p.fecha_postulacion <= ?`;
+        sql += ` AND p.fecha_postulacion < DATE_ADD(?, INTERVAL 1 DAY)`;
         params.push(filters.hasta);
     }
 
@@ -80,7 +79,7 @@ const deletePostulaciones = async (ids) => {
 };
 
 
-// REPORTES 
+// REPORTES
 const getReportes = async (filters = {}) => {
 
     let sql = `
@@ -113,11 +112,11 @@ const getReportes = async (filters = {}) => {
 
     if (filters.desde) {
         sql += ` AND r.fecha_generacion >= ?`;
-        params.push(filters.desde);
+        params.push(filters.desde + ' 00:00:00');
     }
 
     if (filters.hasta) {
-        sql += ` AND r.fecha_generacion <= ?`;
+        sql += ` AND r.fecha_generacion < DATE_ADD(?, INTERVAL 1 DAY)`;
         params.push(filters.hasta);
     }
 

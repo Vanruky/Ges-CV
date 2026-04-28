@@ -96,16 +96,11 @@ export class ReportsComponent implements OnInit {
   }
 
   exportarExcel() {
-    console.log('CLICK EXCEL');
-
     this.reportsService.exportExcel({
       texto: this.filtroTexto || undefined,
       desde: this.desde || undefined,
       hasta: this.hasta || undefined
     }).subscribe(blob => {
-
-      console.log('RESPUESTA', blob);
-
       this.download(blob, 'reportes.xlsx');
     });
   }

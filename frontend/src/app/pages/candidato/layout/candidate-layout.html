@@ -1,6 +1,6 @@
 <div class="layout">
   <div class="sidebar">
-    <h2 class="sidebar-brand">Bienvenido</h2>
+    <h2 class="sidebar-brand">GES-CV</h2>
     <a routerLink="/candidato/home" routerLinkActive="active">Home</a>
     <a routerLink="/candidato/cuenta" routerLinkActive="active">Mi cuenta</a>
     <a routerLink="/candidato/postulaciones" routerLinkActive="active">Postular</a>
@@ -10,13 +10,9 @@
     
     <div class="topbar">
       <div class="topbar-left"></div>
-      
-      <div class="topbar-center">
-        <h2 class="topbar-title">{{ tituloPagina }}</h2>
-      </div>
 
       <div class="topbar-right">
-        <button class="btn-logout" (click)="logout()">Salir</button>
+        <button class="btn-logout" (click)="logout()">Cerrar Sesión</button>
       </div>
     </div>
 
@@ -25,7 +21,7 @@
         <router-outlet (activate)="onActivate($event)"></router-outlet>
         
         <p class="aviso-postulacion">
-          Recuerde que solo se puede realizar una postulación cada 6 meses para el mismo cargo.
+          Puedes volver a postularte al mismo cargo transcurridos 6 meses desde tu última solicitud.
         </p>
       </div>
     </div>

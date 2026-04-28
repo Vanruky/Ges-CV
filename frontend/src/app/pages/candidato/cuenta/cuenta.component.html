@@ -1,28 +1,24 @@
 <div class="content-cuenta">
   <div class="card">
-    
+
     <div class="field">
       <label>RUT</label>
-      <input [(ngModel)]="perfil.numero_identificacion" 
-             [disabled]="!editando || perfil.datos_fijos === 1">
+      <input [(ngModel)]="perfil.numero_identificacion" [disabled]="!editando || perfil.datos_fijos === 1">
     </div>
 
     <div class="field">
       <label>Nombre</label>
-      <input [(ngModel)]="perfil.nombre" 
-             [disabled]="!editando || perfil.datos_fijos === 1">
+      <input [(ngModel)]="perfil.nombre" [disabled]="!editando || perfil.datos_fijos === 1">
     </div>
 
     <div class="field">
       <label>Apellido paterno</label>
-      <input [(ngModel)]="perfil.apellido_paterno" 
-             [disabled]="!editando || perfil.datos_fijos === 1">
+      <input [(ngModel)]="perfil.apellido_paterno" [disabled]="!editando || perfil.datos_fijos === 1">
     </div>
 
     <div class="field">
       <label>Apellido materno</label>
-      <input [(ngModel)]="perfil.apellido_materno" 
-             [disabled]="!editando || perfil.datos_fijos === 1">
+      <input [(ngModel)]="perfil.apellido_materno" [disabled]="!editando || perfil.datos_fijos === 1">
     </div>
 
     <div class="field">
@@ -51,8 +47,8 @@
     <div class="modal-card">
       <h3>Confirmación de Seguridad</h3>
       <div class="modal-body">
-        <p>Tenga en cuenta que el <strong>RUT, Nombre y Apellidos</strong> solo se pueden editar una vez.</p>
-        <p>¿Está seguro de que los datos son correctos?</p>
+        <p>Ten en cuenta que el <strong>RUT, Nombre y Apellidos</strong> solo se pueden editar una vez.</p>
+        <p>¿Estás seguro de que los datos son correctos?</p>
       </div>
       <div class="modal-actions">
         <button class="btn-modal-cancel" (click)="cerrarModales()">Revisar</button>
@@ -65,7 +61,7 @@
     <div class="modal-card success">
       <h3>¡Actualizado!</h3>
       <div class="modal-body">
-        <p>Su información ha sido guardada con éxito.</p>
+        <p>Tu información ha sido guardada con éxito.</p>
       </div>
       <div class="modal-actions">
         <button class="btn-modal-confirm" (click)="cerrarModales()">Aceptar</button>
@@ -77,7 +73,7 @@
     <div class="modal-card error">
       <h3>Ups, algo salió mal</h3>
       <div class="modal-body">
-        <p>Error al actualizar la información. Intente nuevamente.</p>
+        <p>Error al actualizar la información. Intenta nuevamente.</p>
       </div>
       <div class="modal-actions">
         <button class="btn-modal-error" (click)="cerrarModales()">Cerrar</button>

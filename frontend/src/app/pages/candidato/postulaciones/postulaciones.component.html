@@ -24,14 +24,14 @@
       <div class="field">
         <label>Estamento</label>
         <select [(ngModel)]="estamentoSeleccionado">
-          <option value="">Seleccione estamento</option>
+          <option value="">Selecciona estamento</option>
           <option *ngFor="let est of estamentos" [value]="est">{{est}}</option>
         </select>
       </div>
       <div class="field">
         <label>Cargo</label>
         <select [(ngModel)]="cargoSeleccionado">
-          <option value="">Seleccione cargo</option>
+          <option value="">Selecciona cargo</option>
           <option *ngFor="let c of cargos" [value]="c">{{c}}</option>
         </select>
       </div>
@@ -50,7 +50,7 @@
   </div>
 
   <div class="cuestionario-container">
-    <p>Realiza tu cuestionario psicológico después de subir tu información</p>
+    <p>Luego de completar tu información, haz click en el botón para realizar el cuestionario psicológico.</p>
     <button class="btn-cuestionario" (click)="irACuestionario()">
       Iniciar cuestionario
     </button>

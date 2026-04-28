@@ -7,6 +7,7 @@ module.exports = {
     Cargo: require('./cargoModel'),
     Postulacion: require('./postulacionModel'),
     Candidato: require('./candidatoModel'),
-    Curriculum: require('./cvModel')
+    Curriculum: require('./cvModel'),
+    Admin: require('./adminModel')
 
 };

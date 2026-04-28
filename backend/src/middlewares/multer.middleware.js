@@ -6,7 +6,7 @@ const storage = multer.diskStorage({
         cb(null, 'uploads/documentacion');
     },
     filename: (req, file, cb) => {
-        // 1. Rescatamos los datos del body que enviará el Front-end
+        //datos del body que enviará el Front-end
         const nombre = req.body.nombre || 'SIN_NOMBRE';
         const apellido = req.body.apellido || 'SIN_APELLIDO';
         const cargo = req.body.cargo || 'SIN_CARGO';
@@ -32,7 +32,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({ 
     storage: storage,
     fileFilter: fileFilter,
-    limits: { fileSize: 10 * 1024 * 1024 } 
+    limits: { fileSize: 5 * 1024 * 1024 } 
 });
 
 module.exports = upload;

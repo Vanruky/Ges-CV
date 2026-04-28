@@ -1,6 +1,7 @@
 const adminService = require('../services/admin.service');
 const ExcelJS = require('exceljs');
 const PDFDocument = require('pdfkit');
+const Admin= require('../models')
 
 
 // POSTULACIONES (HISTORIAL)

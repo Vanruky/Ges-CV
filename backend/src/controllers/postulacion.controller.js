@@ -1,5 +1,15 @@
-const { Postulacion, Curriculum } = require('../models'); 
+const { Postulacion, Curriculum, Cargo } = require('../models'); 
 const obtenerDatosCandidato = require('../utils/obtenerDatosCandidato');
+
+exports.obtenerOpciones = async (req, res) => {
+    try {
+        const data = await Cargo.obtenerTodosConEstamento(); 
+        res.json(data);
+    } catch (error) {
+        console.error("Error al obtener opciones:", error);
+        res.status(500).json({ error: "Error al cargar la lista de cargos" });
+    }
+};
 
 exports.crearPostulacion = async (req, res) => {
     try {
@@ -37,7 +47,7 @@ exports.crearPostulacion = async (req, res) => {
         res.status(500).json({ error: "Error interno al procesar la postulación" });
     }
 };
-//historial
+
 exports.getMisPostulaciones = async (req, res) => {
     try {
         const { id_candidato } = await obtenerDatosCandidato(req);

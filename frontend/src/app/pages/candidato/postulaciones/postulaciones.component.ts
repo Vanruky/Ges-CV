@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { FormsModule } from '@angular/forms'; 
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-postulaciones',
@@ -11,20 +11,20 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./postulaciones.component.css']
 })
 export class PostulacionesComponent implements OnInit {
-
-  perfil: any = {};
-
+  perfil: any = { numero_identificacion: '', nombre: '', apellido_paterno: '', apellido_materno: '' };
   estamentos: string[] = [];
-  cargos: string[] = [];
+  cargosFiltrados: any[] = [];
+  private todasLasOpciones: any[] = [];
 
   estamentoSeleccionado = '';
-  cargoSeleccionado = '';
-
+  cargoIdSeleccionado = '';
   archivo: File | null = null;
   nombreArchivo = '';
-
   mostrarExito = false;
   mostrarError = false;
+  mensajeError = '';
+
+  private readonly API_URL = 'http://localhost:3000/api';
 
   constructor(private http: HttpClient) {}
 
@@ -33,85 +33,77 @@ export class PostulacionesComponent implements OnInit {
     this.cargarOpcionesFormulario();
   }
 
-  cargarOpcionesFormulario() {
-    this.http.get<any>('http://localhost:3000/api/postulaciones/opciones').subscribe({
-      next: (res) => {
-        this.estamentos = res.estamentos || [];
-        this.cargos = res.cargos || [];
-      },
-      error: (err) => {
-        console.error('Error al cargar opciones de la base de datos:', err);
-      }
-    });
-  }
-
   obtenerDatosUsuario() {
     const token = localStorage.getItem('token');
-    this.http.get<any>('http://localhost:3000/api/candidatos/perfil', {
-      headers: { Authorization: `Bearer ${token}` }
-    }).subscribe({
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    this.http.get<any>(`${this.API_URL}/candidatos/perfil`, { headers }).subscribe({
       next: (res) => this.perfil = res,
       error: (err) => console.error('Error al cargar perfil:', err)
     });
   }
 
+  cargarOpcionesFormulario() {
+    this.http.get<any[]>(`${this.API_URL}/postulaciones/opciones`).subscribe({
+      next: (res) => {
+        this.todasLasOpciones = res;
+        this.estamentos = [...new Set(res.map(item => item.nombre_estamento))];
+      },
+      error: (err) => console.error('Error al cargar opciones:', err)
+    });
+  }
+
+  onEstamentoChange() {
+    this.cargoIdSeleccionado = '';
+    this.cargosFiltrados = this.todasLasOpciones.filter(
+      item => item.nombre_estamento === this.estamentoSeleccionado
+    );
+  }
+
   onFile(event: any) {
     const file = event.target.files[0];
-    if (file) {
-      if (file.type !== 'application/pdf') {
-        this.mostrarError = true;
-        return;
-      }
-      if (file.size > 5 * 1024 * 1024) {
-        this.mostrarError = true;
-        return;
-      }
+    if (file && file.type === 'application/pdf') {
       this.archivo = file;
       this.nombreArchivo = file.name;
     }
   }
 
   postular() {
-    if (!this.archivo || !this.cargoSeleccionado || !this.estamentoSeleccionado) {
-      this.mostrarError = true;
-      return;
-    }
+    if (!this.archivo || !this.cargoIdSeleccionado) return;
 
+    const cargoObj = this.todasLasOpciones.find(c => c.id_cargo == this.cargoIdSeleccionado);
     const form = new FormData();
-    form.append('cargo', this.cargoSeleccionado);
-    form.append('estamento', this.estamentoSeleccionado);
-    form.append('cv', this.archivo);
+    form.append('id_cargo', this.cargoIdSeleccionado);
+    form.append('id_estamento', cargoObj.id_estamento);
+    form.append('cv', this.archivo); 
 
     const token = localStorage.getItem('token');
-    this.http.post<any>('http://localhost:3000/api/postulaciones', form, {
-      headers: { Authorization: `Bearer ${token}` }
-    }).subscribe({
-      next: () => {
-        this.mostrarExito = true;
-        this.limpiarFormulario();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http.post(`${this.API_URL}/postulaciones`, form, { headers }).subscribe({
+      next: () => { 
+        this.mostrarExito = true; 
+        this.limpiarFormulario(); 
       },
-      error: () => this.mostrarError = true
+      error: (err) => { 
+        this.mostrarError = true; 
+        this.mensajeError = err.error?.mensaje || 'Error al postular'; 
+      }
     });
   }
 
-  cerrarModales() {
-    this.mostrarExito = false;
-    this.mostrarError = false;
+  irACuestionario() { 
+    window.open('https://forms.google.com', '_blank');
+  }
+
+  cerrarModales() { 
+    this.mostrarExito = false; 
+    this.mostrarError = false; 
   }
 
   limpiarFormulario() {
     this.estamentoSeleccionado = '';
-    this.cargoSeleccionado = '';
+    this.cargoIdSeleccionado = '';
     this.archivo = null;
     this.nombreArchivo = '';
-  }
-
-  irACuestionario() {
-    window.open('https://forms.google.com', '_blank');
-  }
-
-  logout() {
-    localStorage.clear();
-    window.location.href = '/login';
   }
 }

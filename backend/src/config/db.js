@@ -1,18 +1,17 @@
-const mysql = require('mysql2')
-require('dotenv').config();
+const mysql = require('mysql2');
 
-const pool =mysql.createPool({
-    host:process.env.DB_HOST,
+const pool = mysql.createPool({
+    host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
+    port: process.env.DB_PORT || 3306, //asegura la conexión
     waitForConnections: true,
-    connectionLimit:10,
+    connectionLimit: 10,
     queueLimit: 0 
-
 });
-//esto es para que erconozca el async y await
+
+// Convertimos a promesas para usar async/await
 const promisePool = pool.promise();
 
-//esto es para que la promesa se pueda usar en los modelos 
 module.exports = promisePool;

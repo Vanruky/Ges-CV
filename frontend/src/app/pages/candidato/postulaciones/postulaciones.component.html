@@ -23,16 +23,16 @@
 
       <div class="field">
         <label>Estamento</label>
-        <select [(ngModel)]="estamentoSeleccionado">
+        <select [(ngModel)]="estamentoSeleccionado" (change)="onEstamentoChange()">
           <option value="">Selecciona estamento</option>
           <option *ngFor="let est of estamentos" [value]="est">{{est}}</option>
         </select>
       </div>
       <div class="field">
         <label>Cargo</label>
-        <select [(ngModel)]="cargoSeleccionado">
+        <select [(ngModel)]="cargoIdSeleccionado">
           <option value="">Selecciona cargo</option>
-          <option *ngFor="let c of cargos" [value]="c">{{c}}</option>
+          <option *ngFor="let c of cargosFiltrados" [value]="c.id_cargo">{{ c.nombre_cargo }}</option>
         </select>
       </div>
     </div>

@@ -3,22 +3,22 @@
 
     <div class="field">
       <label>RUT</label>
-      <input [(ngModel)]="perfil.numero_identificacion" [disabled]="!editando || perfil.datos_fijos === 1">
+      <input [(ngModel)]="perfil.numero_identificacion" [disabled]="!editando || perfil.rut_editado === 1">
     </div>
 
     <div class="field">
       <label>Nombre</label>
-      <input [(ngModel)]="perfil.nombre" [disabled]="!editando || perfil.datos_fijos === 1">
+      <input [(ngModel)]="perfil.nombre" [disabled]="!editando || perfil.nombre_apellidos_editados === 1">
     </div>
 
     <div class="field">
       <label>Apellido paterno</label>
-      <input [(ngModel)]="perfil.apellido_paterno" [disabled]="!editando || perfil.datos_fijos === 1">
+      <input [(ngModel)]="perfil.apellido_paterno" [disabled]="!editando || perfil.nombre_apellidos_editados === 1">
     </div>
 
     <div class="field">
       <label>Apellido materno</label>
-      <input [(ngModel)]="perfil.apellido_materno" [disabled]="!editando || perfil.datos_fijos === 1">
+      <input [(ngModel)]="perfil.apellido_materno" [disabled]="!editando || perfil.nombre_apellidos_editados === 1">
     </div>
 
     <div class="field">

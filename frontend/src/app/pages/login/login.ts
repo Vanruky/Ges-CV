@@ -49,18 +49,29 @@ export class Login {
       return;
     }
 
-    const usuarioMock = {
-      id: 2,
-      correo: this.correo,
-      rol: 'CANDIDATO'
-    };
+    localStorage.removeItem('token');
 
-    const tokenMock = 'mock-token-123';
+    this.auth.login({ correo: this.correo, password: this.password }).subscribe({
+      next: (res) => {
+        const token = res?.token;
 
-    this.auth.setToken(tokenMock);
-    localStorage.setItem('usuario', JSON.stringify(usuarioMock));
-
-    this.router.navigate(['/candidato/home']);
+        if (typeof token === 'string' && token.split('.').length === 3) {
+          this.auth.setToken(token);
+          localStorage.setItem('usuario', JSON.stringify(res.usuario || { correo: this.correo }));
+          this.router.navigate(['/candidato/home']);
+        } else {
+          localStorage.removeItem('token');
+          this.correoError = 'No se recibió token válido del servidor';
+          console.error('Respuesta de login sin token válido:', res);
+        }
+      },
+      error: (err) => {
+        localStorage.removeItem('token');
+        console.error('Error en login:', err);
+        const mensaje = err.error?.mensaje || err.error?.error || 'Credenciales inválidas';
+        this.passwordError = mensaje;
+      }
+    });
   }
 
   goToRecover() {

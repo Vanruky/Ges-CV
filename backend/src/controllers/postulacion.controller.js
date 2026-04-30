@@ -3,7 +3,7 @@ const obtenerDatosCandidato = require('../utils/obtenerDatosCandidato');
 
 exports.obtenerOpciones = async (req, res) => {
     try {
-        const data = await Cargo.obtenerTodosConEstamento(); 
+        const data = await Cargo.obtenerTodasFilas(); 
         res.json(data);
     } catch (error) {
         console.error("Error al obtener opciones:", error);

@@ -2,7 +2,6 @@ const db =require('../config/db')
 
 const Postulacion = {
 
-    // crear una nueva postulación
     crearPostulacion: async (id_candidato, datos) => {
         const sql = `
             INSERT INTO postulacion 
@@ -15,15 +14,12 @@ const Postulacion = {
             datos.id_cargo,
             datos.id_estamento
         ];
-        
-        // guardado de la info
+
         const [result] = await db.query(sql, valores);
-        
-        // devuelve la fila que se acaba de crear con el id
+
         return result.insertId;
     },
 
-    // obtener la informacion del candidato con el id
     obtenerPorCandidato: async (id_candidato) => {
         const sql = `
             SELECT 
@@ -41,15 +37,11 @@ const Postulacion = {
         const [rows] = await db.query(sql, [id_candidato]);
         return rows;
     },
-    //verificar si la persona postula 2 veces
+
     verificarDuplicado: async (id_candidato, id_cargo) => {
     const sql = `SELECT id_postulacion FROM postulacion WHERE id_candidato = ? AND id_cargo = ?`;
     const [rows] = await db.query(sql, [id_candidato, id_cargo]);
-    return rows.length > 0; /*Devuelve true si encuentra 
-    coincidencias entre la busqueda del id candidato con el cargo (osea duplicados),
-    recordar esto para el codigo del controlador
-    */
-},
+    return rows.length > 0; 
 };
 
 module.exports = Postulacion;

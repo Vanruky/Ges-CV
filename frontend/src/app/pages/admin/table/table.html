@@ -32,14 +32,28 @@
                     <tr *ngFor="let item of data">
 
                         <td>
-                            <input type="checkbox" [checked]="selectedIds.has(item.id_postulacion)"
-                                (change)="toggleSelection.emit(item.id_postulacion)" />
+                            <input
+                                type="checkbox"
+                                [checked]="selectedIds.includes(item.id_postulacion)"
+                                (change)="toggleSelection.emit(item.id_postulacion)"
+                            />
                         </td>
 
-                        <td>{{ item.fecha }}</td>
+                        <td>{{ item.fecha | date:'dd-MM-yyyy HH:mm' }}</td>
                         <td>{{ item.postulante }}</td>
                         <td>{{ item.cargo }}</td>
-                        <td><button class="btn-pdf">⬇</button></td>
+
+                        <td>
+                            <button
+                                class="btn-pdf"
+                                *ngIf="item.pdf_url"
+                                (click)="openPdf(item.pdf_url)">
+                                ⬇
+                            </button>
+
+                            <span *ngIf="!item.pdf_url">—</span>
+                        </td>
+
                         <td>{{ item.estado }}</td>
 
                     </tr>
@@ -71,6 +85,7 @@
                             <a *ngIf="item.url_documento" [href]="item.url_documento" target="_blank">
                                 <button class="btn-pdf">⬇</button>
                             </a>
+
                             <span *ngIf="!item.url_documento">—</span>
                         </td>
 

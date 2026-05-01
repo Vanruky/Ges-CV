@@ -34,7 +34,7 @@
 
 
 <app-table [data]="postulantes" tipo="historial" [selectedIds]="selectedIds"
-    (toggleSelection)="toggleSelection($event)">
+    (toggleSelection)="toggleSelection($event)" (openPdfEvent)="abrirPdf($event)">
 </app-table>
 
 

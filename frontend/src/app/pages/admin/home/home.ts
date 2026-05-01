@@ -6,6 +6,7 @@ import { HistorialPostulacionService, HistorialPostulacion } from '@services/his
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
+
 @Component({
   selector: 'app-admin-home',
   standalone: true,
@@ -17,7 +18,8 @@ export class AdminHomeComponent implements OnInit {
 
   postulantes: HistorialPostulacion[] = [];
 
-  selectedIds = new Set<number>();
+  selectedIds: number[] = [];
+
   selectAllChecked = false;
 
   filtroTexto = '';
@@ -38,7 +40,7 @@ export class AdminHomeComponent implements OnInit {
 
   private filtroSubject = new Subject<void>();
 
-  constructor(private service: HistorialPostulacionService) {}
+  constructor(private service: HistorialPostulacionService) { }
 
   ngOnInit(): void {
     this.cargar();
@@ -50,9 +52,9 @@ export class AdminHomeComponent implements OnInit {
 
   private getFiltros() {
     return {
-      texto: this.filtroTexto || undefined,
-      desde: this.desde || undefined,
-      hasta: this.hasta || undefined
+      texto: this.filtroTexto ? this.filtroTexto : '',
+      desde: this.desde ? this.desde : '',
+      hasta: this.hasta ? this.hasta : ''
     };
   }
 
@@ -63,7 +65,7 @@ export class AdminHomeComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.postulantes = data;
-          this.selectedIds.clear();
+          this.selectedIds = [];
           this.selectAllChecked = false;
           this.loading = false;
         },
@@ -83,9 +85,11 @@ export class AdminHomeComponent implements OnInit {
   }
 
   toggleSelection(id: number) {
-    this.selectedIds.has(id)
-      ? this.selectedIds.delete(id)
-      : this.selectedIds.add(id);
+    if (this.selectedIds.includes(id)) {
+      this.selectedIds = this.selectedIds.filter(x => x !== id);
+    } else {
+      this.selectedIds.push(id);
+    }
 
     this.syncSelectAllState();
   }
@@ -94,8 +98,8 @@ export class AdminHomeComponent implements OnInit {
     this.selectAllChecked = !this.selectAllChecked;
 
     this.selectedIds = this.selectAllChecked
-      ? new Set(this.postulantes.map(p => p.id_postulacion))
-      : new Set();
+      ? this.postulantes.map(p => p.id_postulacion)
+      : [];
 
     this.syncSelectAllState();
   }
@@ -103,11 +107,11 @@ export class AdminHomeComponent implements OnInit {
   syncSelectAllState() {
     this.selectAllChecked =
       this.postulantes.length > 0 &&
-      this.selectedIds.size === this.postulantes.length;
+      this.selectedIds.length === this.postulantes.length;
   }
 
   get cantidadSeleccionados() {
-    return this.selectedIds.size;
+    return this.selectedIds.length;
   }
 
   get cantidadFiltrados() {
@@ -121,13 +125,12 @@ export class AdminHomeComponent implements OnInit {
   exportar(tipo: 'pdf' | 'excel', modo: 'selected' | 'filtered') {
 
     const filtros = this.getFiltros();
-    const ids = Array.from(this.selectedIds);
 
     if (tipo === 'pdf') {
       if (modo === 'selected') {
-        if (!ids.length) return;
+        if (!this.selectedIds.length) return;
 
-        this.service.exportPDF({}, ids)
+        this.service.exportPDF({}, this.selectedIds)
           .subscribe(blob => this.download(blob, 'postulaciones-seleccionadas.pdf'));
 
       } else {
@@ -138,9 +141,9 @@ export class AdminHomeComponent implements OnInit {
 
     if (tipo === 'excel') {
       if (modo === 'selected') {
-        if (!ids.length) return;
+        if (!this.selectedIds.length) return;
 
-        this.service.exportExcel({}, ids)
+        this.service.exportExcel({}, this.selectedIds)
           .subscribe(blob => this.download(blob, 'postulaciones-seleccionadas.xlsx'));
 
       } else {
@@ -165,14 +168,14 @@ export class AdminHomeComponent implements OnInit {
   }
 
   depurar() {
-    if (!this.selectedIds.size) return;
+    if (!this.selectedIds.length) return;
 
-    this.modalMessage = `¿Eliminar ${this.selectedIds.size} postulaciones?`;
+    this.modalMessage = `¿Eliminar ${this.selectedIds.length} postulaciones?`;
     this.showModal = true;
   }
 
   confirmarEliminar() {
-    const ids = Array.from(this.selectedIds);
+    const ids = this.selectedIds;
 
     if (ids.length === this.postulantes.length) {
       this.showToast('No puedes eliminar todos los registros', 'warning');
@@ -181,6 +184,7 @@ export class AdminHomeComponent implements OnInit {
     }
 
     const MAX_DELETE = 50;
+
     if (ids.length > MAX_DELETE) {
       this.showToast(`Solo puedes eliminar hasta ${MAX_DELETE} registros`, 'warning');
       this.showModal = false;
@@ -189,7 +193,7 @@ export class AdminHomeComponent implements OnInit {
 
     this.service.deletePostulaciones(ids).subscribe({
       next: () => {
-        this.selectedIds.clear();
+        this.selectedIds = [];
         this.selectAllChecked = false;
         this.showModal = false;
         this.cargar();
@@ -207,7 +211,7 @@ export class AdminHomeComponent implements OnInit {
     if (!this.postulantes.length) return;
 
     this.showExportMenu = !this.showExportMenu;
-    this.submenu = null; 
+    this.submenu = null;
   }
 
   @HostListener('document:click', ['$event'])
@@ -216,7 +220,7 @@ export class AdminHomeComponent implements OnInit {
 
     if (!target.closest('.export-dropdown')) {
       this.showExportMenu = false;
-      this.submenu = null; 
+      this.submenu = null;
     }
   }
 
@@ -226,6 +230,10 @@ export class AdminHomeComponent implements OnInit {
     this.toastVisible = true;
 
     setTimeout(() => this.toastVisible = false, 3000);
+  }
+
+  abrirPdf(url: string) {
+    window.open(url, '_blank');
   }
 
 }

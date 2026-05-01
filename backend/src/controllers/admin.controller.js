@@ -175,7 +175,8 @@ const exportPDFHistorial = async (req, res) => {
     try {
         const data = await adminService.getPostulaciones(req.query);
 
-        const doc = new PDFDocument();
+        const PDFDocument = require('pdfkit');
+        const doc = new PDFDocument({ margin: 30 });
 
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader(
@@ -201,6 +202,7 @@ const exportPDFHistorial = async (req, res) => {
         doc.end();
 
     } catch (error) {
+        console.error(error); 
         res.status(500).json({ message: 'Error export PDF historial' });
     }
 };

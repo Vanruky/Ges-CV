@@ -59,10 +59,9 @@
             <label>Tipo de Reporte</label>
             <select [(ngModel)]="nuevoReporte.tipo_reporte">
                 <option value="">Seleccionar</option>
+                <option value="REPORTE_GENERAL">Alta rotación</option>
                 <option value="DISPONIBILIDAD_POR_CARGO">Disponibilidad por cargo</option>
-                <option value="ALTA_ROTACION">Alta rotación</option>
                 <option value="BAJA_POSTULACION">Baja postulación</option>
-                <option value="HISTORIAL_EVALUACIONES">Historial de evaluaciones</option>
             </select>
         </div>
 
@@ -95,9 +94,10 @@
             </button>
         </div>
 
-        <div class="toast" *ngIf="toast.visible" [ngClass]="toast.tipo">
+    </div>
+
+            <div class="toast" *ngIf="toast.visible" [ngClass]="toast.tipo">
             {{ toast.mensaje }}
         </div>
-
-    </div>
+        
 </div>

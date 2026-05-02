@@ -32,11 +32,8 @@
                     <tr *ngFor="let item of data">
 
                         <td>
-                            <input
-                                type="checkbox"
-                                [checked]="selectedIds.includes(item.id_postulacion)"
-                                (change)="toggleSelection.emit(item.id_postulacion)"
-                            />
+                            <input type="checkbox" [checked]="selectedIds.includes(item.id_postulacion)"
+                                (change)="toggleSelection.emit(item.id_postulacion)" />
                         </td>
 
                         <td>{{ item.fecha | date:'dd-MM-yyyy HH:mm' }}</td>
@@ -44,14 +41,11 @@
                         <td>{{ item.cargo }}</td>
 
                         <td>
-                            <button
-                                class="btn-pdf"
-                                *ngIf="item.pdf_url"
-                                (click)="openPdf(item.pdf_url)">
-                                ⬇
+                            <button class="btn-pdf" *ngIf="item.cv_url" (click)="openPdf(item.cv_url)">
+                                ⬇ CV
                             </button>
 
-                            <span *ngIf="!item.pdf_url">—</span>
+                            <span *ngIf="!item.cv_url">—</span>
                         </td>
 
                         <td>{{ item.estado }}</td>
@@ -68,21 +62,23 @@
                         <td>{{ item.fecha_generacion | date:'dd-MM-yyyy HH:mm' }}</td>
 
                         <td>
-                            <span class="badge" [ngClass]="item.clase_tipo">
-                                {{ item.tipo_formateado }}
+                            <span class="badge">
+                                {{ item.tipo_reporte }}
                             </span>
                         </td>
 
-                        <td>{{ item.descripcion }}</td>
+                        <td>{{ item.descripcion || '—' }}</td>
 
                         <td>
                             <span class="badge-user">
-                                {{ item.usuario?.correo || '—' }}
+                                {{ item.generado_por || '—' }}
                             </span>
                         </td>
 
                         <td>
-                            <a *ngIf="item.url_documento" [href]="item.url_documento" target="_blank">
+                            <a *ngIf="item.url_documento" [href]="'http://localhost:3000' + item.url_documento"
+                                target="_blank">
+
                                 <button class="btn-pdf">⬇</button>
                             </a>
 
@@ -92,7 +88,7 @@
                     </tr>
 
                     <tr *ngIf="data.length === 0">
-                        <td colspan="6" style="text-align:center; opacity:0.6;">
+                        <td colspan="5" style="text-align:center; opacity:0.6;">
                             No hay reportes disponibles
                         </td>
                     </tr>

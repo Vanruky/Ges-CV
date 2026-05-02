@@ -33,46 +33,29 @@
 </div>
 
 
-<app-table [data]="postulantes" tipo="historial" [selectedIds]="selectedIds"
-    (toggleSelection)="toggleSelection($event)" (openPdfEvent)="abrirPdf($event)">
+<app-table [data]="postulantes" tipo="historial" [selectedIds]="selectedIds" (toggleSelection)="toggleSelection($event)"
+    (openPdfEvent)="abrirPdf($event)">
 </app-table>
 
 
 <div class="actions">
 
-    <span class="selection-info">{{ cantidadSeleccionados }} seleccionados</span>
+    <span class="selection-info">
+        {{ cantidadSeleccionados }} seleccionados
+    </span>
 
     <div class="export-dropdown">
 
-        <button class="btn export" (click)="toggleExportMenu()" [disabled]="!postulantes.length">
+        <button class="btn export" (click)="toggleExportMenu()" [disabled]="!cantidadSeleccionados"
+            [class.disabled]="!cantidadSeleccionados">
             Exportar ({{ cantidadSeleccionados }})
         </button>
 
         <div class="dropdown-menu" *ngIf="showExportMenu">
-
-            <div class="submenu">
-                <button (click)="toggleSubmenu('selected')" [class.active]="submenu === 'selected'" [disabled]="!cantidadSeleccionados">
-                    Seleccionados
-                </button>
-
-                <div *ngIf="submenu === 'selected'" class="submenu-items">
-                    <button (click)="exportar('pdf', 'selected')">📄 PDF</button>
-                    <button (click)="exportar('excel', 'selected')">📊 Excel</button>
-                </div>
-            </div>
-
-            <div class="submenu">
-                <button (click)="toggleSubmenu('filtered')" [class.active]="submenu === 'filtered'">
-                    Filtrados
-                </button>
-
-                <div *ngIf="submenu === 'filtered'" class="submenu-items">
-                    <button (click)="exportar('pdf', 'filtered')">📄 PDF</button>
-                    <button (click)="exportar('excel', 'filtered')">📊 Excel</button>
-                </div>
-            </div>
-
+            <button (click)="exportar('pdf')">📄 PDF</button>
+            <button (click)="exportar('excel')">📊 Excel</button>
         </div>
+
     </div>
 
     <button class="btn depurar" (click)="depurar()" [disabled]="!cantidadSeleccionados">
@@ -80,7 +63,6 @@
     </button>
 
 </div>
-
 
 <div *ngIf="toastVisible" class="toast" [ngClass]="toastType">
     {{ toastMessage }}

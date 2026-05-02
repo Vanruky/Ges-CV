@@ -3,7 +3,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { Usuario } = require('../models'); // Importas Usuario desde el index
-const authService = require('../services/auth.service'); 
+const authService = require('../services/auth.service');
 
 
 exports.login = async (req, res) => {
@@ -55,7 +55,7 @@ exports.login = async (req, res) => {
         }
 
         const token = jwt.sign(
-            { id: usuario.id, rol: usuario.rol },
+            { id_usuario: usuario.id, rol: usuario.rol, correo: usuario.correo },
             jwtSecret,
             { expiresIn: '2h' }
         );
@@ -64,10 +64,10 @@ exports.login = async (req, res) => {
             mensaje: 'Login exitoso',
             token,
             usuario: {
-                id: usuario.id,
+                id_usuario: usuario.id,
                 correo: usuario.correo,
                 rol: usuario.rol,
-                nombre: usuario.nombre || usuario.usuario_nombre 
+                nombre: usuario.nombre || usuario.usuario_nombre
             }
         });
 

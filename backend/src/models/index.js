@@ -8,6 +8,4 @@ module.exports = {
     Postulacion: require('./postulacionModel'),
     Candidato: require('./candidatoModel'),
     Curriculum: require('./cvModel'),
-    Admin: require('./adminModel')
-
 };

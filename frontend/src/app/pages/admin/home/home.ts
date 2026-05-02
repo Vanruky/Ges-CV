@@ -32,15 +32,13 @@ export class AdminHomeComponent implements OnInit {
   modalMessage = '';
   showExportMenu = false;
 
-  submenu: 'selected' | 'filtered' | null = null;
-
   toastVisible = false;
   toastMessage = '';
   toastType: 'error' | 'success' | 'warning' | 'info' = 'info';
 
   private filtroSubject = new Subject<void>();
 
-  constructor(private service: HistorialPostulacionService) { }
+  constructor(private service: HistorialPostulacionService) {}
 
   ngOnInit(): void {
     this.cargar();
@@ -52,10 +50,14 @@ export class AdminHomeComponent implements OnInit {
 
   private getFiltros() {
     return {
-      texto: this.filtroTexto ? this.filtroTexto : '',
-      desde: this.desde ? this.desde : '',
-      hasta: this.hasta ? this.hasta : ''
+      texto: this.filtroTexto || '',
+      desde: this.desde || '',
+      hasta: this.hasta || ''
     };
+  }
+
+  get hayFiltroActivo(): boolean {
+    return !!(this.filtroTexto || this.desde || this.hasta);
   }
 
   cargar() {
@@ -65,8 +67,10 @@ export class AdminHomeComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.postulantes = data;
+
           this.selectedIds = [];
           this.selectAllChecked = false;
+
           this.loading = false;
         },
         error: () => {
@@ -85,11 +89,9 @@ export class AdminHomeComponent implements OnInit {
   }
 
   toggleSelection(id: number) {
-    if (this.selectedIds.includes(id)) {
-      this.selectedIds = this.selectedIds.filter(x => x !== id);
-    } else {
-      this.selectedIds.push(id);
-    }
+    this.selectedIds = this.selectedIds.includes(id)
+      ? this.selectedIds.filter(x => x !== id)
+      : [...this.selectedIds, id];
 
     this.syncSelectAllState();
   }
@@ -100,8 +102,6 @@ export class AdminHomeComponent implements OnInit {
     this.selectedIds = this.selectAllChecked
       ? this.postulantes.map(p => p.id_postulacion)
       : [];
-
-    this.syncSelectAllState();
   }
 
   syncSelectAllState() {
@@ -110,50 +110,23 @@ export class AdminHomeComponent implements OnInit {
       this.selectedIds.length === this.postulantes.length;
   }
 
-  get cantidadSeleccionados() {
-    return this.selectedIds.length;
-  }
+  // ✔ exportación SOLO seleccionados
+  exportar(tipo: 'pdf' | 'excel') {
+    if (!this.selectedIds.length) return;
 
-  get cantidadFiltrados() {
-    return this.postulantes.length;
-  }
+    const fileName =
+      tipo === 'pdf'
+        ? 'postulaciones.pdf'
+        : 'postulaciones.xlsx';
 
-  toggleSubmenu(menu: 'selected' | 'filtered') {
-    this.submenu = this.submenu === menu ? null : menu;
-  }
+    const request =
+      tipo === 'pdf'
+        ? this.service.exportPDF({}, this.selectedIds)
+        : this.service.exportExcel({}, this.selectedIds);
 
-  exportar(tipo: 'pdf' | 'excel', modo: 'selected' | 'filtered') {
-
-    const filtros = this.getFiltros();
-
-    if (tipo === 'pdf') {
-      if (modo === 'selected') {
-        if (!this.selectedIds.length) return;
-
-        this.service.exportPDF({}, this.selectedIds)
-          .subscribe(blob => this.download(blob, 'postulaciones-seleccionadas.pdf'));
-
-      } else {
-        this.service.exportPDF(filtros)
-          .subscribe(blob => this.download(blob, 'postulaciones-filtradas.pdf'));
-      }
-    }
-
-    if (tipo === 'excel') {
-      if (modo === 'selected') {
-        if (!this.selectedIds.length) return;
-
-        this.service.exportExcel({}, this.selectedIds)
-          .subscribe(blob => this.download(blob, 'postulaciones-seleccionadas.xlsx'));
-
-      } else {
-        this.service.exportExcel(filtros)
-          .subscribe(blob => this.download(blob, 'postulaciones-filtradas.xlsx'));
-      }
-    }
+    request.subscribe(blob => this.download(blob, fileName));
 
     this.showExportMenu = false;
-    this.submenu = null;
   }
 
   private download(blob: Blob, name: string) {
@@ -176,6 +149,8 @@ export class AdminHomeComponent implements OnInit {
 
   confirmarEliminar() {
     const ids = this.selectedIds;
+
+    if (!ids.length) return;
 
     if (ids.length === this.postulantes.length) {
       this.showToast('No puedes eliminar todos los registros', 'warning');
@@ -207,11 +182,18 @@ export class AdminHomeComponent implements OnInit {
     this.showModal = false;
   }
 
-  toggleExportMenu() {
-    if (!this.postulantes.length) return;
+  // ✔ UI helpers
+  get cantidadSeleccionados() {
+    return this.selectedIds.length;
+  }
 
+  get cantidadFiltrados() {
+    return this.postulantes.length;
+  }
+
+  toggleExportMenu() {
+    if (!this.selectedIds.length) return;
     this.showExportMenu = !this.showExportMenu;
-    this.submenu = null;
   }
 
   @HostListener('document:click', ['$event'])
@@ -220,11 +202,10 @@ export class AdminHomeComponent implements OnInit {
 
     if (!target.closest('.export-dropdown')) {
       this.showExportMenu = false;
-      this.submenu = null;
     }
   }
 
-  showToast(message: string, type: 'error' | 'success' | 'warning' | 'info' = 'info') {
+  showToast(message: string, type: any = 'info') {
     this.toastMessage = message;
     this.toastType = type;
     this.toastVisible = true;

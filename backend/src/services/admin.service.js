@@ -10,15 +10,29 @@ const getPostulaciones = async (filters = {}) => {
             p.fecha_postulacion AS fecha,
             ep.nombre AS estado,
             c.nombre AS cargo,
+
             CONCAT(
                 ca.nombre, ' ',
                 ca.apellido_paterno, ' ',
                 IFNULL(ca.apellido_materno, '')
-            ) AS postulante
+            ) AS postulante,
+
+            cv.nombre_archivo_servidor AS cv_url
+
         FROM postulacion p
         JOIN estado_postulacion ep ON p.id_estado = ep.id_estado
         JOIN cargo c ON p.id_cargo = c.id_cargo
         JOIN candidato ca ON p.id_candidato = ca.id_candidato
+
+        LEFT JOIN curriculum cv 
+            ON cv.id_cv = (
+                SELECT id_cv
+                FROM curriculum
+                WHERE id_candidato = ca.id_candidato
+                ORDER BY fecha_subida DESC
+                LIMIT 1
+        )
+
         WHERE 1=1
     `;
 
@@ -44,6 +58,7 @@ const getPostulaciones = async (filters = {}) => {
         sql += ` AND p.fecha_postulacion >= ?`;
         params.push(filters.desde + ' 00:00:00');
     }
+
     if (filters.hasta) {
         sql += ` AND p.fecha_postulacion < DATE_ADD(?, INTERVAL 1 DAY)`;
         params.push(filters.hasta);
@@ -89,8 +104,7 @@ const getReportes = async (filters = {}) => {
             r.descripcion,
             r.url_documento,
             r.fecha_generacion,
-            u.id_usuario,
-            u.correo AS usuario_correo
+            u.correo AS generado_por
         FROM reporte r
         JOIN usuario u ON r.id_usuario = u.id_usuario
         WHERE 1=1
@@ -98,7 +112,7 @@ const getReportes = async (filters = {}) => {
 
     const params = [];
 
-    if (filters.texto) {
+    if (filters.texto && filters.texto !== '') {
         sql += `
             AND (
                 REPLACE(LOWER(r.tipo_reporte), '_', ' ') LIKE ?
@@ -110,12 +124,12 @@ const getReportes = async (filters = {}) => {
         params.push(texto, texto, texto);
     }
 
-    if (filters.desde) {
+    if (filters.desde && filters.desde !== '') {
         sql += ` AND r.fecha_generacion >= ?`;
         params.push(filters.desde + ' 00:00:00');
     }
 
-    if (filters.hasta) {
+    if (filters.hasta && filters.hasta !== '') {
         sql += ` AND r.fecha_generacion < DATE_ADD(?, INTERVAL 1 DAY)`;
         params.push(filters.hasta);
     }
@@ -130,10 +144,7 @@ const getReportes = async (filters = {}) => {
         descripcion: r.descripcion,
         url_documento: r.url_documento,
         fecha_generacion: r.fecha_generacion,
-        usuario: {
-            id_usuario: r.id_usuario,
-            correo: r.usuario_correo
-        }
+        generado_por: r.generado_por
     }));
 };
 
@@ -153,13 +164,19 @@ const createReporte = async (reporte) => {
         url_documento
     ]);
 
+    const [userRows] = await db.query(`
+        SELECT correo 
+        FROM usuario 
+        WHERE id_usuario = ?
+    `, [id_usuario]);
+
     return {
         id_reporte: result.insertId,
-        id_usuario,
         tipo_reporte,
         descripcion,
         url_documento,
-        fecha_generacion: new Date()
+        fecha_generacion: new Date(),
+        generado_por: userRows[0]?.correo || null
     };
 };
 

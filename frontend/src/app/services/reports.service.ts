@@ -9,7 +9,7 @@ export interface Reporte {
   descripcion: string;
   fecha_generacion: string;
   url_documento?: string;
-  usuario?: { id_usuario: number; correo: string };
+  generado_por?: string;
 }
 
 @Injectable({

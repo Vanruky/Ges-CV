@@ -10,6 +10,7 @@ type ReporteUI = Reporte & {
   tipo_formateado: string;
 };
 
+
 @Component({
   selector: 'app-reports',
   standalone: true,
@@ -30,6 +31,8 @@ export class ReportsComponent implements OnInit {
   showModal = false;
   showExportMenu = false;
 
+  loading = false;
+
   nuevoReporte: Partial<Reporte> = {
     tipo_reporte: '',
     descripcion: ''
@@ -38,15 +41,13 @@ export class ReportsComponent implements OnInit {
   archivoSeleccionado: File | null = null;
   archivoNombre = '';
 
-  loading = false;
-
   toast = {
     visible: false,
     mensaje: '',
     tipo: 'success' as 'success' | 'error' | 'warning'
   };
 
-  constructor(private reportsService: ReportsService) {}
+  constructor(private reportsService: ReportsService) { }
 
   ngOnInit(): void {
     this.cargarReportes();
@@ -56,21 +57,22 @@ export class ReportsComponent implements OnInit {
       .subscribe(() => this.cargarReportes());
   }
 
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: Event) {
-    const target = event.target as HTMLElement;
-    if (!target.closest('.export-dropdown')) {
-      this.showExportMenu = false;
-    }
+
+  onFiltroChange() {
+    this.filtroSubject.next();
+  }
+
+  onFechaChange() {
+    this.cargarReportes();
   }
 
   cargarReportes() {
     this.loading = true;
 
     this.reportsService.getReportes({
-      texto: this.filtroTexto || undefined,
-      desde: this.desde || undefined,
-      hasta: this.hasta || undefined
+      texto: this.filtroTexto || '',
+      desde: this.desde || '',
+      hasta: this.hasta || ''
     }).subscribe({
       next: (data) => {
         this.reportes = data.map(r => ({
@@ -87,19 +89,12 @@ export class ReportsComponent implements OnInit {
     });
   }
 
-  onFiltroChange() {
-    this.filtroSubject.next();
-  }
-
-  onFechaChange() {
-    this.cargarReportes();
-  }
 
   exportarExcel() {
     this.reportsService.exportExcel({
-      texto: this.filtroTexto || undefined,
-      desde: this.desde || undefined,
-      hasta: this.hasta || undefined
+      texto: this.filtroTexto || '',
+      desde: this.desde || '',
+      hasta: this.hasta || ''
     }).subscribe(blob => {
       this.download(blob, 'reportes.xlsx');
     });
@@ -107,9 +102,9 @@ export class ReportsComponent implements OnInit {
 
   exportarPDF() {
     this.reportsService.exportPDF({
-      texto: this.filtroTexto || undefined,
-      desde: this.desde || undefined,
-      hasta: this.hasta || undefined
+      texto: this.filtroTexto || '',
+      desde: this.desde || '',
+      hasta: this.hasta || ''
     }).subscribe(blob => {
       this.download(blob, 'reportes.pdf');
     });
@@ -118,10 +113,37 @@ export class ReportsComponent implements OnInit {
   private download(blob: Blob, name: string) {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
+
     a.href = url;
     a.download = name;
     a.click();
+
     window.URL.revokeObjectURL(url);
+  }
+
+  toggleExportMenu() {
+    if (!this.reportes.length) {
+      this.mostrarToast('No hay reportes para exportar', 'warning');
+      return;
+    }
+
+    this.showExportMenu = !this.showExportMenu;
+  }
+
+  abrirModal() {
+    this.showModal = true;
+  }
+
+  cerrarModal() {
+    this.showModal = false;
+
+    this.nuevoReporte = {
+      tipo_reporte: '',
+      descripcion: ''
+    };
+
+    this.archivoSeleccionado = null;
+    this.archivoNombre = '';
   }
 
   generarReporte() {
@@ -133,9 +155,7 @@ export class ReportsComponent implements OnInit {
     this.loading = true;
 
     const formData = new FormData();
-    const userId = Number(localStorage.getItem('user_id'));
 
-    formData.append('id_usuario', String(userId));
     formData.append('tipo_reporte', this.nuevoReporte.tipo_reporte);
     formData.append('descripcion', this.nuevoReporte.descripcion || '');
 
@@ -157,6 +177,7 @@ export class ReportsComponent implements OnInit {
     });
   }
 
+
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (!file) return;
@@ -177,44 +198,38 @@ export class ReportsComponent implements OnInit {
     this.archivoNombre = '';
   }
 
-  toggleExportMenu() {
-    if (!this.reportes.length) {
-      this.mostrarToast('No hay reportes para exportar', 'warning');
-      return;
-    }
-    this.showExportMenu = !this.showExportMenu;
-  }
-
-  abrirModal() {
-    this.showModal = true;
-  }
-
-  cerrarModal() {
-    this.showModal = false;
-    this.nuevoReporte = { tipo_reporte: '', descripcion: '' };
-    this.archivoSeleccionado = null;
-    this.archivoNombre = '';
-  }
 
   mostrarToast(mensaje: string, tipo: 'success' | 'error' | 'warning') {
-    this.toast = { visible: true, mensaje, tipo };
-    setTimeout(() => this.toast.visible = false, 3000);
+    this.toast = {
+      visible: true,
+      mensaje,
+      tipo
+    };
+
+    setTimeout(() => {
+      this.toast.visible = false;
+    }, 3000);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: Event) {
+    const target = event.target as HTMLElement;
+
+    if (!target.closest('.export-dropdown')) {
+      this.showExportMenu = false;
+    }
   }
 
 
   private formatearTipo(tipo: string): string {
     if (!tipo) return '';
 
-    let texto = tipo
+    return tipo
       .replaceAll('_', ' ')
       .toLowerCase()
-      .replace(/\b\w/g, l => l.toUpperCase());
-
-    texto = texto
+      .replace(/\b\w/g, l => l.toUpperCase())
       .replace('Rotacion', 'Rotación')
-      .replace('Evaluaciones', 'Evaluaciones');
-
-    return texto;
+      .replace('Postulacion', 'Postulación');
   }
 
 }

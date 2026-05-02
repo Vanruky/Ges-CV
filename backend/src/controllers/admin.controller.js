@@ -1,7 +1,7 @@
 const adminService = require('../services/admin.service');
 const ExcelJS = require('exceljs');
 const PDFDocument = require('pdfkit');
-const Admin= require('../models')
+const Admin = require('../models')
 
 
 // POSTULACIONES (HISTORIAL)
@@ -202,7 +202,7 @@ const exportPDFHistorial = async (req, res) => {
         doc.end();
 
     } catch (error) {
-        console.error(error); 
+        console.error(error);
         res.status(500).json({ message: 'Error export PDF historial' });
     }
 };
@@ -294,10 +294,13 @@ const getReportes = async (req, res) => {
 
 const createReporte = async (req, res) => {
     try {
-        const { tipo_reporte, descripcion, id_usuario } = req.body;
+
+        const { tipo_reporte, descripcion } = req.body;
+
+        const id_usuario = req.usuario.id; 
 
         const url_documento = req.file
-            ? `/uploads/${req.file.filename}`
+            ? `/uploads/reportes_admin/${req.file.filename}`
             : null;
 
         const result = await adminService.createReporte({
@@ -307,10 +310,11 @@ const createReporte = async (req, res) => {
             url_documento
         });
 
-        res.json(result);
+        return res.json(result);
 
     } catch (error) {
-        res.status(500).json({ message: 'Error creando reporte', error });
+        console.error(error);
+        return res.status(500).json({ message: 'Error creando reporte' });
     }
 };
 
@@ -354,7 +358,7 @@ const exportExcelReportes = async (req, res) => {
                 fecha_generacion: r.fecha_generacion,
                 tipo_reporte: r.tipo_reporte,
                 descripcion: r.descripcion,
-                usuario: r.usuario.correo,
+                usuario: r.usuario_correo,
                 url_documento: r.url_documento
             });
         });
@@ -452,7 +456,7 @@ const exportPDFReportes = async (req, res) => {
                 .text(`Tipo: ${r.tipo_reporte}`)
                 .text(`Fecha: ${r.fecha_generacion}`)
                 .text(`Descripción: ${r.descripcion}`)
-                .text(`Usuario: ${r.usuario.correo}`)
+                .text(`Usuario: ${r.usuario_correo}`)
                 .moveDown();
         });
 

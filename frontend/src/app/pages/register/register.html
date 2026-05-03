@@ -26,7 +26,7 @@
                 <option value="PASAPORTE">Pasaporte</option>
             </select>
 
-            <input [value]="numero_identificacion" (input)="filtrarIdentificacion($event)"
+            <input [(ngModel)] ="numero_identificacion" (input)="filtrarIdentificacion($event)"
                 placeholder="Número de identificación">
         </div>
 

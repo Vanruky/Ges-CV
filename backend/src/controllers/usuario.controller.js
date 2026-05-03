@@ -65,6 +65,7 @@ exports.login = async (req, res) => {
             token,
             usuario: {
                 id_usuario: usuario.id,
+                id: usuario.id, //esto es para que funcione con los dos nombres 
                 correo: usuario.correo,
                 rol: usuario.rol,
                 nombre: usuario.nombre || usuario.usuario_nombre

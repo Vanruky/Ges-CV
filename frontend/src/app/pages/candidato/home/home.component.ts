@@ -14,7 +14,7 @@ export class HomeComponent implements OnInit {
 
   nombre: string = '';
   postulaciones: any[] = [];
-
+  usuario: any = null;
   cuestionarioRealizado: number = 0; 
   fechaCuestionario: string | null = null;
 
@@ -36,9 +36,11 @@ export class HomeComponent implements OnInit {
       }
     }).subscribe({
       next: (res) => {
+        this.usuario = res.usuario;
+        
         this.nombre = res.usuario?.nombre_completo || 'Candidato';
         this.postulaciones = res.postulaciones || [];
-
+        
         this.cuestionarioRealizado = res.cuestionario?.realizado ?? 0;
         this.fechaCuestionario = res.cuestionario?.fecha || null;
         

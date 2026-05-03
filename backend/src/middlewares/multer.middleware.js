@@ -3,22 +3,22 @@ const path = require('path');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/documentacion');
+        const rutaCorrecta = path.join(__dirname, '../uploads/documentacion');
+        cb(null, rutaCorrecta);
     },
     filename: (req, file, cb) => {
-        //datos del body que enviará el Front-end
-        const nombre = req.body.nombre || 'SIN_NOMBRE';
-        const apellido = req.body.apellido || 'SIN_APELLIDO';
-        const cargo = req.body.cargo || 'SIN_CARGO';
-        
-        // creamos el nombre apellido y cargo 
-        const nombreBase = `${nombre}_${apellido}_${cargo}`.replace(/\s+/g, '_').toUpperCase();
-        
-        // timestamp por si postula denuevo no se borre la info
-        const nombreFinal = `${nombreBase}_${Date.now()}${path.extname(file.originalname)}`;
-        
-        cb(null, nombreFinal);
-    }
+    const nombre = (req.body.nombre || 'CANDIDATO').replace(/\s+/g, '_');
+    const apellido = (req.body.apellido || 'DESCONOCIDO').replace(/\s+/g, '_');
+    
+    // LIMPIEZA DEl nombre de CARGO
+    const cargo = (req.body.cargo || 'CARGO')
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "") 
+        .replace(/\//g, '_') 
+        .replace(/\s+/g, '_'); 
+
+    const nombreFinal = `${nombre}_${apellido}_${cargo}_${Date.now()}${path.extname(file.originalname)}`.toUpperCase();
+    cb(null, nombreFinal);
+}
 });
 
 const fileFilter = (req, file, cb) => {

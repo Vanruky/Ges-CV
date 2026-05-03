@@ -50,9 +50,22 @@ exports.crearPostulacion = async (req, res) => {
 
 exports.getMisPostulaciones = async (req, res) => {
     try {
-        const { id_candidato } = await obtenerDatosCandidato(req);
+        const datos = await obtenerDatosCandidato(req);
+        
+        // Validación de seguridad para asegurar que existen los datos del candidato
+        if (!datos || !datos.id_candidato) {
+            return res.json([]);
+        }
+
+        const id_candidato = datos.id_candidato;
         const data = await Postulacion.obtenerPorCandidato(id_candidato);
-        res.json(data);
+        const dataFormateada = data.map(p => ({
+            ...p,
+            cargo: p.nombre_cargo, 
+            estado: p.nombre_estado 
+        }));
+
+        res.json(dataFormateada);
     } catch (error) {
         console.error("Error al obtener historial:", error);
         res.status(500).json({ error: "Error al obtener tus postulaciones" });

@@ -2,7 +2,13 @@ const db = require('../config/db');
 
 async function obtenerDatosCandidato(req) {
     try {
-        const id_usuario = req.usuario.id; 
+        // 1. Intentamos capturar el ID de cualquier forma posible
+        const id_usuario = req.usuario?.id_usuario || req.usuario?.id; 
+
+        if (!id_usuario) {
+            console.error("DEBUG: El token no trae ni id ni id_usuario", req.usuario);
+            return null;
+        }
 
         const sql = `
             SELECT id_candidato, numero_identificacion AS rut
@@ -13,15 +19,14 @@ async function obtenerDatosCandidato(req) {
         const [rows] = await db.query(sql, [id_usuario]);
 
         if (rows.length > 0) {
+            // 2. Retornamos los datos que el sistema necesita para el PDF
             return {
                 id_candidato: rows[0].id_candidato,
                 rut: rows[0].rut
             };
         }
 
-        // en el caso del admin no hay fila en candidato
-        throw new Error('No se encontró el perfil de candidato para este usuario');
-
+        return null; 
     } catch (error) {
         console.error("Error en obtenerDatosCandidato:", error.message);
         return null; 

@@ -1,6 +1,6 @@
 <div class="home-container">
   <header class="welcome-header">
-    <h2>Bienvenido, <span>{{nombre}}</span></h2>
+    <h2>Bienvenido, <span>{{usuario?.nombre_completo}}</span></h2>
     <p>Este es el resumen de tu actividad en la plataforma GES-CV.</p>
   </header>
 
@@ -22,8 +22,8 @@
             </thead>
             <tbody>
               <tr *ngFor="let p of postulaciones">
-                <td>{{ p.fecha_postulacion | date:'dd/MM/yyyy' }}</td>
-                <td>{{ p.cargo }}</td>
+                <td>{{p.fecha| date:'dd/MM/yyyy' }}</td>
+                <td>{{p.cargo}}</td>
               </tr>
             </tbody>
           </table>

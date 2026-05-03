@@ -2,7 +2,8 @@ const { Candidato } = require('../models');
 
 exports.obtenerPerfil = async (req, res) => {
     try {
-        const id_usuario = req.usuario.id; 
+        const id_usuario = req.usuario.id_usuario; //esta linea me sirve a mi(javi)
+        //const id_usuario = req.usuario.id;   --esta linea sirve a miren 
         const candidato = await Candidato.obtenerPerfil(id_usuario);
 
         if (!candidato) {
@@ -23,7 +24,7 @@ exports.obtenerPerfil = async (req, res) => {
 
 exports.actualizarPerfil = async (req, res) => {
     try {
-        const id_usuario = req.usuario.id;
+        const id_usuario = req.usuario.id_usuario;   // antes estaba: req.usuario.id;
         const datosNuevos = req.body; 
 
         const resultado = await Candidato.actualizarPerfil(id_usuario, datosNuevos);

@@ -20,14 +20,17 @@
         <label>Apellido materno</label>
         <input [value]="perfil.apellido_materno" disabled>
       </div>
-
+      
       <div class="field">
-        <label>Estamento</label>
-        <select [(ngModel)]="estamentoSeleccionado" (change)="onEstamentoChange()">
-          <option value="">Selecciona estamento</option>
-          <option *ngFor="let est of estamentos" [value]="est">{{est}}</option>
-        </select>
-      </div>
+  <label>Estamento</label>
+  <select [(ngModel)]="estamentoSeleccionado" (change)="onEstamentoChange()">
+    <option value="">Selecciona estamento</option>
+    <option *ngFor="let est of estamentos" [value]="est">
+      {{ est }}
+    </option>
+  </select>
+</div>
+
       <div class="field">
         <label>Cargo</label>
         <select [(ngModel)]="cargoIdSeleccionado">

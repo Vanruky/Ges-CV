@@ -3,8 +3,8 @@ const obtenerDatosCandidato = require('../utils/obtenerDatosCandidato');
 
 exports.getDashboard = async (req, res) => {
     try {
-        const id_usuario = req.usuario.id;
-
+        const id_usuario = req.usuario.id_usuario; //esta linea me sirve a mi(javi)
+        //const id_usuario = req.usuario.id;   --esta linea sirve a miren
         const [perfil, postulaciones] = await Promise.all([
             Candidato.obtenerPerfil(id_usuario),
             obtenerDatosCandidato(req).then(datos => 

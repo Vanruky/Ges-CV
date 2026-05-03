@@ -42,6 +42,7 @@ const Postulacion = {
     const sql = `SELECT id_postulacion FROM postulacion WHERE id_candidato = ? AND id_cargo = ?`;
     const [rows] = await db.query(sql, [id_candidato, id_cargo]);
     return rows.length > 0; 
+}
 };
 
 module.exports = Postulacion;

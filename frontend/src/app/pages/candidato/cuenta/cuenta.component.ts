@@ -33,6 +33,7 @@ export class CuentaComponent implements OnInit {
       headers: { Authorization: `Bearer ${token}` }
     }).subscribe({
       next: (res) => {
+        console.log('Respuesta del servidor:', res);
         this.perfil = res;
         this.copia = { ...res };
       },

@@ -16,7 +16,7 @@ export class PostulacionesComponent implements OnInit {
   cargosFiltrados: any[] = [];
   private todasLasOpciones: any[] = [];
 
-  estamentoSeleccionado = '';
+  estamentoSeleccionado: string = '';
   cargoIdSeleccionado = '';
   archivo: File | null = null;
   nombreArchivo = '';
@@ -51,12 +51,14 @@ export class PostulacionesComponent implements OnInit {
       error: (err) => console.error('Error al cargar opciones:', err)
     });
   }
-
+  
+  
   onEstamentoChange() {
     this.cargoIdSeleccionado = '';
     this.cargosFiltrados = this.todasLasOpciones.filter(
       item => item.nombre_estamento === this.estamentoSeleccionado
     );
+    console.log('Cargos encontrados:', this.cargosFiltrados.length);
   }
 
   onFile(event: any) {
@@ -71,9 +73,30 @@ export class PostulacionesComponent implements OnInit {
     if (!this.archivo || !this.cargoIdSeleccionado) return;
 
     const cargoObj = this.todasLasOpciones.find(c => c.id_cargo == this.cargoIdSeleccionado);
+
     const form = new FormData();
-    form.append('id_cargo', this.cargoIdSeleccionado);
-    form.append('id_estamento', cargoObj.id_estamento);
+
+    form.append('nombre', this.perfil.nombre || 'SIN_NOMBRE');
+    form.append('apellido', this.perfil.apellido_paterno || 'SIN_APELLIDO');
+    form.append('cargo', cargoObj?.nombre_cargo || 'SIN_CARGO');
+
+
+    form.append('id_cargo', this.cargoIdSeleccionado.toString());
+
+    //colocar los estamentos directamente porque no estan definidos en otro lado
+    let idEstamentoFinal = '';
+    const nombreEst = cargoObj?.nombre_estamento?.toUpperCase().trim();
+
+    if (nombreEst === 'PROFESIONAL') idEstamentoFinal = '1';
+    else if (nombreEst === 'TECNICO') idEstamentoFinal = '2';
+    else if (nombreEst === 'AUXILIAR') idEstamentoFinal = '3';
+    else if (nombreEst === 'MEDICO') idEstamentoFinal = '4';
+    else if (nombreEst === 'ADMINISTRATIVO') idEstamentoFinal = '5';
+
+    else if (cargoObj?.id_estamento) idEstamentoFinal = cargoObj.id_estamento.toString();
+
+    form.append('id_estamento', idEstamentoFinal);
+    
     form.append('cv', this.archivo); 
 
     const token = localStorage.getItem('token');
@@ -87,9 +110,10 @@ export class PostulacionesComponent implements OnInit {
       error: (err) => { 
         this.mostrarError = true; 
         this.mensajeError = err.error?.mensaje || 'Error al postular'; 
+        console.error("Error detectado:", err);
       }
     });
-  }
+}
 
   irACuestionario() { 
     window.open('https://forms.google.com', '_blank');
@@ -106,4 +130,6 @@ export class PostulacionesComponent implements OnInit {
     this.archivo = null;
     this.nombreArchivo = '';
   }
+
+  
 }
